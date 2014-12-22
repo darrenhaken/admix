@@ -4,13 +4,13 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'admix/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "admix"
+  spec.name          = 'admix'
   spec.version       = Admix::VERSION
   spec.authors       = ['Darren Haken']
   spec.email         = ['darrenhaken@gmail.com']
-  spec.summary       = ''
-  spec.description   = ''
-  spec.homepage      = ''
+  spec.summary       = 'Mingle Project Management Report Generator'
+  spec.description   = 'Extracts Mingle events and pipes them into Google Spreadsheets so reports can be generated'
+  spec.homepage      = 'https://github.com/darrenhaken/admix'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files -z`.split("\x0")
