@@ -5,5 +5,9 @@ module Admix
       @rest_client = rest_client
       @credentials = credentials
     end
+
+    def find_cards
+
+    end
   end
 end

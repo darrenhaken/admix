@@ -1,7 +1,10 @@
 source 'https://rubygems.org'
 
-group :test do
+gem 'rest-client'
+
+group :development do
   gem 'rspec'
+  gem 'guard-rspec', require: false
 end
 
 # Specify your gem's dependencies in admix.gemspec
