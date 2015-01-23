@@ -5,17 +5,22 @@ require_relative '../lib/admix/mingle'
 
 module Admix
 
-  RSpec.describe Mingle do
+  RSpec.describe RestResource do
 
-    let (:rest_client) { instance_double(RestClient) }
-    subject { Mingle.new(rest_client, {}) }
+  	let(:response) {instance_double(RestClient::Response, :code => 200, :body => "successful get request")}
+  	let(:rest_resource) {instance_double(RestClient::Resource, :get => response)}
+  	subject {Admix::MingleResource.new(rest_resource)}
 
-    describe '#find_cards' do
-      it 'should do something' do
+    describe '#get' do
+      it 'returns response body' do
+      	expect(subject.get_cards).to eq "successful get request"
+      end
 
-        expect(true).to eq true
+      it 'raises an exception when the status code is not 200' do
+        allow(response).to receive(:body).and_return(404)
+        expect(subject.get_cards).to eq "should this raise an exception?"
       end
     end
   end
-end
 
+end

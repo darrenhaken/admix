@@ -1,13 +1,28 @@
-module Admix
-  class Mingle
+require 'rest-client'
 
-    def initialize(rest_client, credentials)
-      @rest_client = rest_client
-      @credentials = credentials
+module Admix
+
+  
+  class MingleResource
+    def initialize(restful_resource)
+      @mingle_resource = restful_resource
     end
 
-    def find_cards
-
+    def get_cards
+      @mingle_resource.get.body
     end
   end
+
+
+  private
+
+    class RestResource
+      def initialize(resource)
+        @resource = resource
+      end
+
+      def get
+        @resource.get.body
+      end
+    end
 end
