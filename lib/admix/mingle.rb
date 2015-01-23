@@ -9,7 +9,11 @@ module Admix
     end
 
     def get_cards
-      @mingle_resource.get.body
+      response = @mingle_resource.get
+      if response.code != 200
+      	return "should this raise an exception?"
+      end
+      response.body
     end
   end
 

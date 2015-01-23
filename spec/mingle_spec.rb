@@ -17,7 +17,7 @@ module Admix
       end
 
       it 'raises an exception when the status code is not 200' do
-        allow(response).to receive(:body).and_return(404)
+        allow(response).to receive(:code).and_return(404)
         expect(subject.get_cards).to eq "should this raise an exception?"
       end
     end
