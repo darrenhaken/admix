@@ -105,7 +105,7 @@
          </property>
          <property type_description="Date" hidden="true">
             <name>Moved to production date</name>
-            <value type="date">2014-12-23</value>
+            <value type="date">2015-01-13</value>
          </property>
          <property type_description="Managed text list" hidden="false">
             <name>Streams</name>

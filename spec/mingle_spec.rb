@@ -33,11 +33,17 @@ module Admix
 
     describe 'MingleWallSnapshot' do
       
-      it 'should return number of stories of given type' do
+      it 'should return number of cards with a status of \'New Customer Request\'' do
       	expect(mingle_story_wall_snapshot.number_of_cards_with_status("New Customer Request")).to eq 1
       end
 
+      it 'should return the number of cards that have gone live in the last 24 hours' do
+        expect(mingle_story_wall_snapshot.number_of_cards_that_went_live_since(Date.parse('2015-01-13'), "Done (Deployed to Live)")).to eq 1
+      end
 
+      it 'should return that no stories have gone live in the last 24 hours' do
+     	expect(mingle_story_wall_snapshot.number_of_cards_that_went_live_since(Date.parse('2015-01-14'), "Done (Deployed to Live)")).to eq 0
+      end
     end
   end
 
