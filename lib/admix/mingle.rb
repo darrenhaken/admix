@@ -15,5 +15,17 @@ module Admix
       response.body
     end
   end
-  
+
+  class XMLTransformation
+
+  	attr_reader :parsed_xml
+
+  	def initialize(xml_string)
+  	  @parsed_xml = Nokogiri::XML(xml_string)
+  	end
+
+  	def number_of_tag_occurences(tag_name)
+  	  @parsed_xml.xpath("//#{tag_name}").count
+  	end
+  end
 end
