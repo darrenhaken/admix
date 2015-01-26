@@ -30,28 +30,28 @@ module Admix
   	end
 
   	def number_of_cards_that_went_live_since date, card_status
-  	  @cards_gone_live = list_of_cards_with_status card_status
-  	  @number_of_valid_live_cards = 0
-  	  @cards_gone_live.each do | live_card |
+  	  cards_gone_live = list_of_cards_with_status card_status
+  	  number_of_valid_live_cards = 0
+  	  cards_gone_live.each do | live_card |
   	  	live_card['properties'].each do | property |
   	  	  if property['name'] == 'Moved to production date' && Date.parse(property['value'].to_s, EXPECTED_DATE_FORMAT) >= date
-  	  	  	@number_of_valid_live_cards =+ 1
+  	  	  	number_of_valid_live_cards =+ 1
   	  	  end
   	  	end
   	  end
-  	  @number_of_valid_live_cards
+  	  number_of_valid_live_cards
   	end
 
   	private
 
   	  def list_of_cards_with_status card_status
-  	    @cards_with_matching_status = []
+  	    cards_with_matching_status = []
   	  	@mingle_wall_hash['cards'].each do | card |
   	  	  if card_status_is card_status, card
-  	  	    @cards_with_matching_status << card
+  	  	    cards_with_matching_status << card
   	  	  end
   	  	end
-  	    return @cards_with_matching_status
+  	    return cards_with_matching_status
   	  end
 
   	  def card_status_is card_status, card_hash
