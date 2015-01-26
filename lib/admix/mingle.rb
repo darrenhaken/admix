@@ -51,7 +51,7 @@ module Admix
   	  	    cards_with_matching_status << card
   	  	  end
   	  	end
-  	    return cards_with_matching_status
+  	    cards_with_matching_status
   	  end
 
   	  def card_status_is card_status, card_hash
