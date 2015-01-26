@@ -28,7 +28,7 @@
       <properties type="array">
          <property type_description="Managed text list" hidden="false">
             <name>Status</name>
-            <value>Done (Deployed to Live)</value>
+            <value>New Customer Request</value>
          </property>
          <property type_description="Automatically generated from the team list" hidden="false">
             <name>Owner</name>

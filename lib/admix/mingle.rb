@@ -1,10 +1,7 @@
 require 'rest-client'
+require 'nori'
 
 module Admix
-
-  class CardStatus
-
-  end
 
   class MingleResource
     def initialize(restful_resource)
@@ -20,27 +17,32 @@ module Admix
     end
   end
 
-  class XMLTransformation
+  class MingleWallSnapshot
 
-  	attr_reader :parsed_xml
-
-  	def initialize(xml_string)
-  	  @parsed_xml = Nokogiri::XML(xml_string)
+  	def initialize xml_string
+  	  @mingle_wall_hash = Nori.new.parse(xml_string)
   	end
 
-  	def number_of_tag_occurences(tag_name)
-  	  @parsed_xml.xpath("//#{tag_name}").count
-  	end
-
-  	def number_of_stories_gone_live_since(date_time)
-  	  gone_live = 0
-  	  number_of_cards = @parsed_xml.xpath("//card").count
-  	  number_of_cards.times do | card_number |
-  	  	if @parsed_xml.xpath("//card[#{card_number}]/properties").to_s.include? "Done (Deployed to Live)"
-  	  		gone_live =+ 1
+  	def number_of_cards_with_status(card_status)
+  	  @cards_with_status = 0
+  	  @mingle_wall_hash['cards'].each do | card |
+  	  	if card_status_is card_status, card
+  	  	  @cards_with_status += 1
   	  	end
   	  end
-  	  gone_live
+  	  return @cards_with_status
   	end
+
+  	private
+
+  	  def card_status_is card_status, card_hash
+  	  	card_hash['properties'].each do | property |
+  	  	  if property['name'] == 'Status' && property['value'] == card_status
+  	  	  	return true
+  	  	  end
+  	  	end
+  	  	return false
+  	  end
+
   end
 end

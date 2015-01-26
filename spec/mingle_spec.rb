@@ -1,6 +1,7 @@
 require 'rspec'
 require 'rest-client'
 require 'nokogiri'
+require 'date'
 require_relative '../spec/spec_helper'
 require_relative '../lib/admix/mingle'
 
@@ -24,20 +25,19 @@ module Admix
     end
   end
 
-  RSpec.describe XMLTransformation do
+  RSpec.describe MingleWallSnapshot do
 
 	let(:mingle_stories_xml) {File.read('./assets/mingle_story_response.xml')}
 
-	subject(:xml_transformer) {XMLTransformation.new(mingle_stories_xml)}
+	subject(:mingle_story_wall_snapshot) {MingleWallSnapshot.new(mingle_stories_xml)}
 
-    describe 'xml_transformation' do
-      it 'should marshall xml to objects' do
-      	expect(xml_transformer.number_of_tag_occurences("card")).to eq 2
+    describe 'MingleWallSnapshot' do
+      
+      it 'should return number of stories of given type' do
+      	expect(mingle_story_wall_snapshot.number_of_cards_with_status("New Customer Request")).to eq 1
       end
 
-      it 'should return number of stories gone live in the last 24 hours' do
-      	expect(xml_transformer.number_of_stories_gone_live_since(nil)).to eq 1
-      end
+
     end
   end
 
