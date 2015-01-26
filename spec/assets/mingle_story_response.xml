@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cards type="array">
+   <card>
+      <name>Design Tweaks to distinguish old and new blips in tech radar</name>
+      <description>Are the right people at the kickoff... Stop and think!
+    Please discuss logging during kick off and put any requirements here for testing</description>
+      <card_type url="https://tw-digital.mingle.thoughtworks.com/api/v2/projects/tw_dot_com/card_types/22.xml">
+         <name>Story</name>
+      </card_type>
+      <id type="integer">11562</id>
+      <number type="integer">2307</number>
+      <project url="https://tw-digital.mingle.thoughtworks.com/api/v2/projects/tw_dot_com.xml">
+         <name>TW Dot Com</name>
+         <identifier>tw_dot_com</identifier>
+      </project>
+      <version type="integer">24</version>
+      <project_card_rank type="integer">2295</project_card_rank>
+      <created_on type="datetime">2014-12-22T17:27:15Z</created_on>
+      <modified_on type="datetime">2015-01-16T13:44:29Z</modified_on>
+      <modified_by url="https://tw-digital.mingle.thoughtworks.com/api/v2/users/721.xml">
+         <name>Pablo Porto</name>
+         <login>ppveloso@thoughtworks.com</login>
+      </modified_by>
+      <created_by url="https://tw-digital.mingle.thoughtworks.com/api/v2/users/1.xml">
+         <name>Adam Monago</name>
+         <login>amonago</login>
+      </created_by>
+      <properties type="array">
+         <property type_description="Managed text list" hidden="false">
+            <name>Status</name>
+            <value>Done (Deployed to Live)</value>
+         </property>
+         <property type_description="Automatically generated from the team list" hidden="false">
+            <name>Owner</name>
+            <value url="https://tw-digital.mingle.thoughtworks.com/api/v2/users/721.xml">
+               <name>Pablo Porto</name>
+               <login>ppveloso@thoughtworks.com</login>
+            </value>
+         </property>
+         <property type_description="Managed text list" hidden="true">
+            <name>Week Planned</name>
+            <value nil="true" />
+         </property>
+         <property type_description="Managed text list" hidden="false">
+            <name>Size estimate</name>
+            <value nil="true" />
+         </property>
+         <property type_description="Date" hidden="true">
+            <name>Moved to production date</name>
+            <value type="date">2015-01-16</value>
+         </property>
+         <property type_description="Managed text list" hidden="false">
+            <name>Streams</name>
+            <value>Tech Radar</value>
+         </property>
+         <property type_description="Any card used in tree" hidden="false">
+            <name>Epic</name>
+            <value nil="true" />
+         </property>
+      </properties>
+      <tags />
+      <rendered_description url="https://tw-digital.mingle.thoughtworks.com/api/v2/projects/tw_dot_com/render?content_provider%5Bid%5D=11562&amp;content_provider%5Btype%5D=card" />
+   </card>
+   <card>
+      <name>Reword the text for SAFe in tech radar</name>
+      <description>Are the right people at the kickoff... Stop and think!
+    Please discuss logging during kick off and put any requirements here for testing</description>
+      <card_type url="https://tw-digital.mingle.thoughtworks.com/api/v2/projects/tw_dot_com/card_types/22.xml">
+         <name>Story</name>
+      </card_type>
+      <id type="integer">11542</id>
+      <number type="integer">2305</number>
+      <project url="https://tw-digital.mingle.thoughtworks.com/api/v2/projects/tw_dot_com.xml">
+         <name>TW Dot Com</name>
+         <identifier>tw_dot_com</identifier>
+      </project>
+      <version type="integer">11</version>
+      <project_card_rank type="integer">2293</project_card_rank>
+      <created_on type="datetime">2014-12-22T12:05:22Z</created_on>
+      <modified_on type="datetime">2014-12-23T11:07:40Z</modified_on>
+      <modified_by url="https://tw-digital.mingle.thoughtworks.com/api/v2/users/841.xml">
+         <name>dhaken@thoughtworks.com</name>
+         <login>dhaken</login>
+      </modified_by>
+      <created_by url="https://tw-digital.mingle.thoughtworks.com/api/v2/users/82.xml">
+         <name>Maryam Aidini</name>
+         <login>maidini</login>
+      </created_by>
+      <properties type="array">
+         <property type_description="Managed text list" hidden="false">
+            <name>Status</name>
+            <value>Done (Deployed to Live)</value>
+         </property>
+         <property type_description="Automatically generated from the team list" hidden="false">
+            <name>Owner</name>
+            <value nil="true" />
+         </property>
+         <property type_description="Managed text list" hidden="true">
+            <name>Week Planned</name>
+            <value nil="true" />
+         </property>
+         <property type_description="Managed text list" hidden="false">
+            <name>Size estimate</name>
+            <value nil="true" />
+         </property>
+         <property type_description="Date" hidden="true">
+            <name>Moved to production date</name>
+            <value type="date">2014-12-23</value>
+         </property>
+         <property type_description="Managed text list" hidden="false">
+            <name>Streams</name>
+            <value>Tech Radar</value>
+         </property>
+         <property type_description="Any card used in tree" hidden="false">
+            <name>Epic</name>
+            <value nil="true" />
+         </property>
+      </properties>
+      <tags />
+      <rendered_description url="https://tw-digital.mingle.thoughtworks.com/api/v2/projects/tw_dot_com/render?content_provider%5Bid%5D=11542&amp;content_provider%5Btype%5D=card" />
+   </card>
+</cards>

@@ -1,17 +1,18 @@
 require 'rspec'
 require 'rest-client'
+require 'nokogiri'
 require_relative '../spec/spec_helper'
 require_relative '../lib/admix/mingle'
 
 module Admix
 
-  RSpec.describe RestResource do
+  RSpec.describe MingleResource do
 
   	let(:response) {instance_double(RestClient::Response, :code => 200, :body => "successful get request")}
   	let(:rest_resource) {instance_double(RestClient::Resource, :get => response)}
   	subject {Admix::MingleResource.new(rest_resource)}
 
-    describe '#get' do
+    describe 'get_cards' do
       it 'returns response body' do
       	expect(subject.get_cards).to eq "successful get request"
       end
@@ -19,6 +20,19 @@ module Admix
       it 'raises an exception when the status code is not 200' do
         allow(response).to receive(:code).and_return(404)
         expect(subject.get_cards).to eq "should this raise an exception?"
+      end
+    end
+  end
+
+  RSpec.describe XMLTransformation do
+
+	let(:mingle_stories_xml) {File.read('./assets/mingle_story_response.xml')}
+
+	subject(:xml_transformer) {XMLTransformation.new(mingle_stories_xml)}
+
+    describe 'xml_transformation' do
+      it 'should marshall xml to objects' do
+      	expect(xml_transformer.number_of_tag_occurences("card")).to eq 2
       end
     end
   end
