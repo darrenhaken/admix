@@ -34,6 +34,10 @@ module Admix
       it 'should marshall xml to objects' do
       	expect(xml_transformer.number_of_tag_occurences("card")).to eq 2
       end
+
+      it 'should return number of stories gone live in the last 24 hours' do
+      	expect(xml_transformer.number_of_stories_gone_live_since(nil)).to eq 1
+      end
     end
   end
 
