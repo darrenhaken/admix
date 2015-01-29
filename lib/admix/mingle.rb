@@ -10,10 +10,8 @@ module Admix
 
     def get_cards
       response = @mingle_resource.get
-      if response.code != 200
-      	raise "should this raise an exception?"
-      end
-      response.body
+      return response.body if response.code == 200
+      raise "should this raise an exception?"
     end
   end
 
@@ -31,10 +29,10 @@ module Admix
 
   	def number_of_cards_that_went_live_since date, card_status
       live_cards = list_of_cards_with_status card_status
-      number_of_valid_cards = live_cards.reduce(0) do | number_of_valid_live_cards, live_card | 
-        number_of_valid_live_cards += 1 if live_card_has_moved_to_production date, live_card['properties']
+      valid_live_cards = live_cards.select do | live_card |
+        live_card_has_moved_to_production date, live_card['properties']
       end
-      number_of_valid_cards.to_i
+      valid_live_cards.size
   	end
 
   	private
@@ -46,13 +44,9 @@ module Admix
       end
 
   	  def list_of_cards_with_status card_status
-  	    cards_with_matching_status = []
-  	  	@mingle_wall_hash['cards'].each do | card |
-  	  	  if card_status_is card_status, card['properties']
-  	  	    cards_with_matching_status << card
-  	  	  end
-  	  	end
-  	    cards_with_matching_status
+        @mingle_wall_hash['cards'].select do | card |
+          card_status_is card_status, card['properties']
+        end
   	  end
 
   	  def card_status_is card_status, card_properties
