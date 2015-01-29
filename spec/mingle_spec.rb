@@ -20,7 +20,7 @@ module Admix
 
       it 'raises an exception when the status code is not 200' do
         allow(response).to receive(:code).and_return(404)
-        expect(subject.get_cards).to eq "should this raise an exception?"
+        expect{subject.get_cards}.to raise_error RuntimeError, "should this raise an exception?"
       end
     end
   end
@@ -46,5 +46,6 @@ module Admix
       end
     end
   end
+
 
 end
