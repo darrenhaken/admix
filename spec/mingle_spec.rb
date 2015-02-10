@@ -47,5 +47,19 @@ module Admix
     end
   end
 
+  RSpec.describe CumulativeFlowDiagramSpreadsheet do
+
+    let(:cfd_spreadsheet) {CumulativeFlowDiagramSpreadsheet.new}
+
+    describe CumulativeFlowDiagramSpreadsheet do
+
+      it 'should authenticate with Google Drive' do
+        client = cfd_spreadsheet.build_client 'afahie@thoughtworks.com'
+        file = cfd_spreadsheet.get_file_metadata client, '0AqgwNq-F1tXfdEtFaEx4T0lmV3FrcmhjcEFBQzhxc1E'
+        #puts cfd_spreadsheet.download_file client, file
+      end
+
+    end
+  end
 
 end

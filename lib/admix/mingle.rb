@@ -1,5 +1,6 @@
 require 'rest-client'
 require 'nori'
+require 'google/api_client'
 
 module Admix
 
@@ -16,8 +17,6 @@ module Admix
   end
 
   class MingleWallSnapshot
-
-  	EXPECTED_DATE_FORMAT = "%Y-%m-%d"
 
   	def initialize xml_string
   	  @mingle_wall_hash = Nori.new.parse(xml_string)
@@ -37,6 +36,8 @@ module Admix
 
   	private
 
+      EXPECTED_DATE_FORMAT = "%Y-%m-%d"
+
       def live_card_has_moved_to_production date, card_properties
         return card_properties.any? do | property | 
           property['name'] == 'Moved to production date' && Date.parse(property['value'].to_s, EXPECTED_DATE_FORMAT) >= date
@@ -55,4 +56,59 @@ module Admix
         end
   	  end
   end
+
+  class CumulativeFlowDiagramSpreadsheet
+
+    ## Email of the Service Account #
+    SERVICE_ACCOUNT_EMAIL = '302784193671-k58ohav0tcd6qond11l9v062q76cccvv@developer.gserviceaccount.com'
+
+    ## Path to the Service Account's Private Key file #
+    SERVICE_ACCOUNT_PKCS12_FILE_PATH = '../assets/key.p12'
+
+    ##
+    # Build a Drive client instance authorized with the service account
+    # that acts on behalf of the given user.
+    #
+    # @param [String] user_email
+    #   The email of the user.
+    # @return [Google::APIClient]
+    #   Client instance
+    def build_client(user_email)
+      key = Google::APIClient::PKCS12.load_key(SERVICE_ACCOUNT_PKCS12_FILE_PATH, 'notasecret')
+      asserter = Google::APIClient::JWTAsserter.new(SERVICE_ACCOUNT_EMAIL, 'https://www.googleapis.com/auth/drive', key)
+      client = Google::APIClient.new
+      client.authorization = asserter.authorize(user_email)
+      client
+    end
+
+    def get_file_metadata(client, file_id)
+      drive = client.discovered_api('drive', 'v2')
+      result = client.execute(
+        :api_method => drive.files.get,
+        :parameters => { 'fileId' => file_id })
+      if result.status == 200
+        return result.data
+      else
+        puts "An error occurred: #{result.data['error']['message']}"
+      end
+    end
+
+    def download_file(client, file)
+      #https://developers.google.com/drive/web/manage-downloads
+      if file['exportLinks']['application/x-vnd.oasis.opendocument.spreadsheet']
+        result = client.execute(:uri => file['exportLinks']['application/x-vnd.oasis.opendocument.spreadsheet'], :parameters => { 'alt' => 'media'})
+        if result.status == 200
+          return result.body
+        else
+          puts "An error occurred: #{result.data['error']['message']}"
+          return nil
+        end
+      else
+        puts 'The file doesn\'t have any content stored on Drive.'
+        return nil
+      end
+    end
+
+  end
+
 end
