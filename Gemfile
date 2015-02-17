@@ -4,6 +4,7 @@ gem 'rest-client'
 gem 'nokogiri'
 gem 'nori'
 gem 'google_drive'
+gem 'json'
 
 group :development do
   gem 'rspec'

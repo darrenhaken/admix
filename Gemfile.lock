@@ -130,6 +130,7 @@ DEPENDENCIES
   bundler (~> 1.7)
   google_drive
   guard-rspec
+  json
   nokogiri
   nori
   rake (~> 10.0)
