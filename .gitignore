@@ -1,3 +1,6 @@
+## ignore google service account private key
+*.p12
+
 *.gem
 *.rbc
 /.config
