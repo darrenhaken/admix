@@ -13,7 +13,6 @@ module GoogleDriveApiHelper
     attr_reader :access_token
 
     def initialize(client_id, client_secret, authorization_file, user_email)
-      @authorization_file = authorization_file
       client = Google::APIClient.new(:application_name =>"Admix", :application_version=>"0.3")
       @auth = client.authorization
       @auth.client_id = client_id
@@ -21,14 +20,15 @@ module GoogleDriveApiHelper
       @auth.scope = CLIENT_SCOPE
       @auth.username = user_email
       @auth.redirect_uri = "urn:ietf:wg:oauth:2.0:oob"
+      @authorization_file = authorization_file
     end
 
     def access_token
-      if (not get_stored_credentials) || @auth.refresh_token.nil?
-        return nil unless perform_authentication
+      if (not get_stored_credentials?) || @auth.refresh_token
+        return nil unless perform_authentication?
       end
 
-      if @auth.access_token.nil? || has_token_expired
+      if @auth.access_token || has_token_expired?
         refresh_token
       end
 
@@ -36,8 +36,8 @@ module GoogleDriveApiHelper
     end
 
 
-    def perform_authentication
-      @auth.grant_type = ''
+    def perform_authentication?
+      @auth.grant_type = nil
       authorization_retry = 0
       begin
         print("1. Open this page:\n%s\n\n" % @auth.authorization_uri)
@@ -47,11 +47,7 @@ module GoogleDriveApiHelper
         save_authorization_file
         true
       rescue Signet::AuthorizationError
-        print("\n Authorisation failed.\n")
-        @auth.access_token = nil
-        false
-      rescue ArgumentError
-        print("\n Authorisation failed. Try again\n")
+        print("\n (Authorisation failed) Authorisation code has been used previously.\n")
         if authorization_retry < 2
           authorization_retry += 1
           retry
@@ -59,12 +55,16 @@ module GoogleDriveApiHelper
         print("\n Authorisation failed 3 times.\n")
         @auth.access_token = nil
         false
+      rescue ArgumentError
+        print("\n Authorisation failed.\n")
+        @auth.access_token = nil
+        false
       end
     end
 
     private
 
-    def has_token_expired
+    def has_token_expired?
       Time.now > @auth.expires_at
     end
 
@@ -76,7 +76,7 @@ module GoogleDriveApiHelper
         save_authorization_file
         true
       rescue Signet::AuthorizationError
-        perform_authentication
+        perform_authentication?
       end
     end
 
@@ -92,7 +92,7 @@ module GoogleDriveApiHelper
       end
     end
 
-    def get_stored_credentials()
+    def get_stored_credentials?()
       if File.exists?(@authorization_file)
         file = File.read(@authorization_file)
         token_hash = JSON.parse(file)
@@ -105,7 +105,7 @@ module GoogleDriveApiHelper
           return true
         end
       end
-      return false
+      false
     end
   end
 

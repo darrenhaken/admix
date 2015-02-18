@@ -31,7 +31,7 @@ RSpec.describe AuthenticationManagerForInstalledAppClient do
     before(:each) do
       @number_of_prompt_calls = 3
       @promption_message = "\n2. Enter the authorization code shown in the page: "
-      allow_any_instance_of(AuthenticationManagerForInstalledAppClient).to receive(:gets).and_return("!212")
+      allow_any_instance_of(AuthenticationManagerForInstalledAppClient).to receive(:gets).and_return("rroororrrororor")
       allow_any_instance_of(AuthenticationManagerForInstalledAppClient).to receive(:print)
     end
 
