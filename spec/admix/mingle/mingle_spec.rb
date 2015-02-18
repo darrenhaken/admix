@@ -2,8 +2,8 @@ require 'rspec'
 require 'rest-client'
 require 'nokogiri'
 require 'date'
-require_relative '../spec/spec_helper'
-require_relative '../lib/admix/mingle'
+require_relative '../../../spec/admix/spec_helper'
+require_relative '../../../lib/admix/mingle/mingle'
 
 module Admix
 
@@ -26,7 +26,7 @@ module Admix
   end
 
   RSpec.describe MingleWallSnapshot do
-    let(:file){File.expand_path("../assets/mingle_story_response.xml",__FILE__)}
+    let(:file){File.expand_path('../../../assets/mingle_story_response.xml',__FILE__)}
     let(:mingle_stories_xml) {File.read(file)}
 
     subject(:mingle_story_wall_snapshot) {MingleWallSnapshot.new(mingle_stories_xml)}

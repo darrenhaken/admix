@@ -5,6 +5,8 @@ require 'google/api_client'
 module Admix
 
   class MingleResource
+
+
     def initialize(restful_resource)
       @mingle_resource = restful_resource
     end
@@ -18,7 +20,7 @@ module Admix
 
   class MingleWallSnapshot
 
-  	def initialize xml_string
+  	def initialize(xml_string)
   	  @mingle_wall_hash = Nori.new.parse(xml_string)
   	end
 
