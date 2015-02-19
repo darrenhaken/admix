@@ -4,20 +4,6 @@ require 'google/api_client'
 
 module Admix
 
-  class MingleResource
-
-
-    def initialize(restful_resource)
-      @mingle_resource = restful_resource
-    end
-
-    def get_cards
-      response = @mingle_resource.get
-      return response.body if response.code == 200
-      raise "should this raise an exception?"
-    end
-  end
-
   class MingleWallSnapshot
 
   	def initialize(xml_string)

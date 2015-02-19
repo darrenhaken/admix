@@ -7,24 +7,6 @@ require_relative '../../../lib/admix/mingle/mingle'
 
 module Admix
 
-  RSpec.describe MingleResource do
-
-  	let(:response) {instance_double(RestClient::Response, :code => 200, :body => "successful get request")}
-  	let(:rest_resource) {instance_double(RestClient::Resource, :get => response)}
-  	subject {Admix::MingleResource.new(rest_resource)}
-
-    describe 'get_cards' do
-      it 'returns response body' do
-      	expect(subject.get_cards).to eq "successful get request"
-      end
-
-      it 'raises an exception when the status code is not 200' do
-        allow(response).to receive(:code).and_return(404)
-        expect{subject.get_cards}.to raise_error RuntimeError, "should this raise an exception?"
-      end
-    end
-  end
-
   RSpec.describe MingleWallSnapshot do
     let(:file){File.expand_path('../../../assets/mingle_story_response.xml',__FILE__)}
     let(:mingle_stories_xml) {File.read(file)}
