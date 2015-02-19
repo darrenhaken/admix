@@ -9,6 +9,7 @@ RSpec.describe MingleAPIWrapper do
     @username = 'mbinsabb'
     @password = 'fakepassword'
     @mingle_url = 'tw-digital.mingle.thoughtworks.com'
+    @path_to_assets = "../../../assets/"
   end
 
   before(:each) do
@@ -40,11 +41,10 @@ RSpec.describe MingleAPIWrapper do
       rest_client = double("RestClient")
       response = instance_double(RestClient::Response, :code => 200, :body => 'successful get request')
       allow(rest_client). to receive(:get) {response}
+      wrapper = MingleAPIWrapper.new(@username, @password, @mingle_url, rest_client)
+      project_url = wrapper.full_rest_resource('project')
 
-      @wrapper = MingleAPIWrapper.new(@username, @password, @mingle_url, rest_client)
-      project_url = @wrapper.full_rest_resource('project')
-
-      expect(@wrapper.load_cards_for_project 'project').to be true
+      expect(wrapper.get_cards_for_project('project')).to be true
       expect(rest_client).to have_received(:get).with(project_url).once
     end
 
@@ -52,15 +52,35 @@ RSpec.describe MingleAPIWrapper do
       rest_client = double("RestClient")
       response = instance_double(RestClient::Response, :code => 400, :body => 'body')
       allow(rest_client). to receive(:get) {response}
+      wrapper = MingleAPIWrapper.new(@username, @password, @mingle_url, rest_client)
+      project_url = wrapper.full_rest_resource('project')
 
-      @wrapper = MingleAPIWrapper.new(@username, @password, @mingle_url, rest_client)
-      project_url = @wrapper.full_rest_resource('project')
-
-      expect(@wrapper.load_cards_for_project 'project').to be false
+      expect(wrapper.get_cards_for_project('project')).to be false
       expect(rest_client).to have_received(:get).with(project_url).once
+    end
+
+    it "throws MingleAPIAuthorisationError when status code is 401 " do
+      rest_client = double("RestClient")
+      response = instance_double(RestClient::Response, :code => 401, :body => 'body')
+      allow(rest_client). to receive(:get) {response}
+      wrapper = MingleAPIWrapper.new(@username, @password, @mingle_url, rest_client)
+
+      expect {wrapper.get_cards_for_project('project')}.to raise_error(MingleAPIAuthenticationError)
+    end
+
+    it 'returns XML data which contains all project cards' do
+      xml_file = File.expand_path(@path_to_assets+'mingle_story_response.xml', __FILE__)
+      response_body = File.read(xml_file)
+      rest_client = double("RestClient")
+      response = instance_double(RestClient::Response, :code => 200, :body => response_body)
+      allow(rest_client). to receive(:get) {response}
+
+      wrapper = MingleAPIWrapper.new(@username, @password, @mingle_url, rest_client)
+      wrapper.get_cards_for_project('project')
+
+      expect(wrapper.resource).to be response_body
     end
 
   end
 
-  
 end
