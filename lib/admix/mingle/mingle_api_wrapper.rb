@@ -24,9 +24,13 @@ class MingleAPIWrapper
     @resource
   end
 
-  def get_cards_for_project(project_name)
+  def get_cards_for_project(project_name, filter_by_mql=nil)
     cards_url = full_rest_resource(project_name)
-    response = @rest_client.get(cards_url)
+    if filter_by_mql
+      response = @rest_client.get(cards_url, {:params => {:mql=>filter_by_mql}})
+    else
+      response = @rest_client.get(cards_url)
+    end
 
     if response.code == 200
       @resource = response.body
@@ -34,7 +38,6 @@ class MingleAPIWrapper
     elsif response.code == 401
       raise MingleAPIAuthenticationError.new("Authentication fails Wrong username/password")
     end
-
     false
   end
 

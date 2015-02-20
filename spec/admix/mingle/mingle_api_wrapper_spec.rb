@@ -10,9 +10,6 @@ RSpec.describe MingleAPIWrapper do
     @password = 'fakepassword'
     @mingle_url = 'tw-digital.mingle.thoughtworks.com'
     @path_to_assets = "../../../assets/"
-  end
-
-  before(:each) do
     @wrapper = MingleAPIWrapper.new(@username, @password, @mingle_url, RestClient)
   end
 
@@ -37,50 +34,62 @@ RSpec.describe MingleAPIWrapper do
 
   describe 'Getting resource from Mingle' do
 
-    it 'returns true when loading a card returns a 200 status code' do
-      rest_client = double("RestClient")
-      response = instance_double(RestClient::Response, :code => 200, :body => 'successful get request')
-      allow(rest_client). to receive(:get) {response}
-      wrapper = MingleAPIWrapper.new(@username, @password, @mingle_url, rest_client)
-      project_url = wrapper.full_rest_resource('project')
-
-      expect(wrapper.get_cards_for_project('project')).to be true
-      expect(rest_client).to have_received(:get).with(project_url).once
+    before(:each) do
+      @rest_client = double("RestClient")
+      @project_url = @wrapper.full_rest_resource('project')
     end
 
-    it 'returns false when loading a card returns status code not in range 2XX'do
-      rest_client = double("RestClient")
-      response = instance_double(RestClient::Response, :code => 400, :body => 'body')
-      allow(rest_client). to receive(:get) {response}
-      wrapper = MingleAPIWrapper.new(@username, @password, @mingle_url, rest_client)
-      project_url = wrapper.full_rest_resource('project')
+    def make_response(**args)
+      body = args.has_key?(:body)? args[:body]:"Response Body"
+      instance_double(RestClient::Response, :code => args[:code], :body => body)
+    end
 
-      expect(wrapper.get_cards_for_project('project')).to be false
-      expect(rest_client).to have_received(:get).with(project_url).once
+    it 'returns true when getting cards and the returned status code is 200' do
+      allow(@rest_client).to receive(:get) {make_response(:code => 200)}
+      wrapper = MingleAPIWrapper.new(@username, @password, @mingle_url, @rest_client)
+
+      get_result = wrapper.get_cards_for_project('project')
+
+      expect(get_result).to be true
+      expect(@rest_client).to have_received(:get).with(@project_url).once
+    end
+
+    it 'returns false when getting cards and the returned status code not in range 2XX'do
+      allow(@rest_client).to receive(:get) {make_response(:code => 400)}
+      wrapper = MingleAPIWrapper.new(@username, @password, @mingle_url, @rest_client)
+
+      get_result = wrapper.get_cards_for_project('project')
+
+      expect(get_result).to be false
+      expect(@rest_client).to have_received(:get).with(@project_url).once
     end
 
     it "throws MingleAPIAuthorisationError when status code is 401 " do
-      rest_client = double("RestClient")
-      response = instance_double(RestClient::Response, :code => 401, :body => 'body')
-      allow(rest_client). to receive(:get) {response}
-      wrapper = MingleAPIWrapper.new(@username, @password, @mingle_url, rest_client)
+      allow(@rest_client).to receive(:get) {make_response(:code => 401)}
+      wrapper = MingleAPIWrapper.new(@username, @password, @mingle_url, @rest_client)
 
       expect {wrapper.get_cards_for_project('project')}.to raise_error(MingleAPIAuthenticationError)
     end
 
-    it 'returns XML data which contains all project cards' do
+    it 'returns XML data which contains all project cards if status code is 200' do
       xml_file = File.expand_path(@path_to_assets+'mingle_story_response.xml', __FILE__)
       response_body = File.read(xml_file)
-      rest_client = double("RestClient")
-      response = instance_double(RestClient::Response, :code => 200, :body => response_body)
-      allow(rest_client). to receive(:get) {response}
+      allow(@rest_client).to receive(:get) {make_response(:code => 200, :body => response_body)}
+      wrapper = MingleAPIWrapper.new(@username, @password, @mingle_url, @rest_client)
 
-      wrapper = MingleAPIWrapper.new(@username, @password, @mingle_url, rest_client)
       wrapper.get_cards_for_project('project')
 
       expect(wrapper.resource).to be response_body
     end
 
-  end
+    it "sets 'mql' parameter in the rest_client request when a filter is given" do
+      allow(@rest_client).to receive(:get) {make_response(:code => 200)}
+      wrapper = MingleAPIWrapper.new(@username, @password, @mingle_url, @rest_client)
+      mql_param = "Select COUNT(*) WHERE Status = Dev AND Type = Story"
 
+      wrapper.get_cards_for_project('project', mql_param)
+
+      expect(@rest_client).to have_received(:get).with(@project_url, {:params => {:mql => mql_param}}).once
+    end
+  end
 end
