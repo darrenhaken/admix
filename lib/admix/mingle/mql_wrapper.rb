@@ -2,12 +2,12 @@ require 'yaml'
 
 class MQLWrapper
 
-  MQL_START_STATE = "SELECT COUNT(*) WHERE "
   OR = " OR "
   AND = " AND "
 
-  def initialize(file)
+  def initialize(file, select_elements_statement)
     @file = File.read(file)
+    @mql_select_statement = "SELECT #{select_elements_statement} WHERE "
   end
 
   def parseYAML
@@ -16,11 +16,11 @@ class MQLWrapper
     mql_for_status = get_status(filters)
 
     if mql_for_status and mql_for_types
-      MQL_START_STATE + '(' + mql_for_types + ')' + AND + '(' + mql_for_status + ')'
+      @mql_select_statement + '(' + mql_for_types + ')' + AND + '(' + mql_for_status + ')'
     elsif mql_for_status
-      MQL_START_STATE + mql_for_status
+      @mql_select_statement + mql_for_status
     elsif mql_for_types
-      MQL_START_STATE + mql_for_types
+      @mql_select_statement + mql_for_types
     else
       nil
     end
