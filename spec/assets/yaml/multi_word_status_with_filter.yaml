@@ -1,0 +1,5 @@
+filters:
+  - Status:
+    - = Dev done
+    - '<= A & D done'
+    - '> Next'

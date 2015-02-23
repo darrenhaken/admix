@@ -12,9 +12,11 @@ class MQLWrapper
   def parseYAML
     filters = yaml_filters
     mql_for_types = get_types(filters)
+    mql_for_status = get_status(filters)
 
-    return MQL_START_STATE + mql_for_types
+    return MQL_START_STATE + mql_for_types + mql_for_status
   end
+
 
   private
 
@@ -29,6 +31,17 @@ class MQLWrapper
         return f[key]
       end
     end
+    nil
+  end
+
+  def get_status(filters)
+    status = filters_for_key(filters, "Status")
+    return '' if status.nil?
+
+    if status.is_a?(Array)
+      return statement_for_status_in_array(status)
+    end
+    "Status #{status}"
   end
 
   def get_types(filter)
@@ -52,9 +65,28 @@ class MQLWrapper
     mql_statement
   end
 
+  def statement_for_status_in_array(status)
+    mql_statement = statement_for_single_status(status.delete_at(0))
+    status.each {
+        |a_status| mql_statement += OR + statement_for_single_status(a_status)
+    }
+    mql_statement
+  end
+
+  def statement_for_single_status(a_status)
+    if is_single_word?(a_status)
+      "Status #{a_status}"
+    else
+      sign = a_status.split(' ', 2)[0]
+      the_status = a_status.split(' ', 2)[1]
+      "Status #{sign} '#{the_status}'"
+    end
+  end
+
   def statement_for_single_typ(type)
     negating = is_negating?(type)
     type.slice!('not ')
+    type = is_single_word?(type)? type:"'#{type}'"
     negating ? "Type != #{type}":"Type = #{type}"
   end
 
@@ -62,4 +94,7 @@ class MQLWrapper
     clause.start_with?('not ')
   end
 
+  def is_single_word?(string)
+    string.scan(/[\w'-]+/).length == 1
+  end
 end
