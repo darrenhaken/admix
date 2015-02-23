@@ -4,6 +4,7 @@ class MQLWrapper
 
   MQL_START_STATE = "SELECT COUNT(*) WHERE "
   OR = " OR "
+  AND = " AND "
 
   def initialize(file)
     @file = File.read(file)
@@ -14,9 +15,16 @@ class MQLWrapper
     mql_for_types = get_types(filters)
     mql_for_status = get_status(filters)
 
-    return MQL_START_STATE + mql_for_types + mql_for_status
+    if mql_for_status and mql_for_types
+      MQL_START_STATE + '(' + mql_for_types + ')' + AND + '(' + mql_for_status + ')'
+    elsif mql_for_status
+      MQL_START_STATE + mql_for_status
+    elsif mql_for_types
+      MQL_START_STATE + mql_for_types
+    else
+      nil
+    end
   end
-
 
   private
 
@@ -36,7 +44,7 @@ class MQLWrapper
 
   def get_status(filters)
     status = filters_for_key(filters, "Status")
-    return '' if status.nil?
+    return nil if status.nil?
 
     if status.is_a?(Array)
       return statement_for_status_in_array(status)
@@ -46,7 +54,7 @@ class MQLWrapper
 
   def get_types(filter)
     types = filters_for_key(filter, "Type")
-    return '' if types.nil?
+    return nil if types.nil?
 
     if types.is_a?(Array)
       statement_for_types_in_array(types)

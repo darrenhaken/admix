@@ -122,6 +122,18 @@ RSpec.describe MQLWrapper do
 
       expect(result).to eq expected_mql
     end
-
   end
+
+  describe "Parse a YAML string to MQL for 'SELECT COUNT(*) WHERE' for filter containing 'Type' and 'Status'" do
+    it "formats a filter that contains one filter based on Type, and another based on Status" do
+      yaml_file = File.expand_path(@yaml_assets_path + 'filter_for_single_typ_and_status.yaml', __FILE__)
+      mql_wrapper = MQLWrapper.new(yaml_file)
+      expected_mql = "SELECT COUNT(*) WHERE (Type = 'Power Ups') AND (Status <= 'A & D done')"
+
+      result = mql_wrapper.parseYAML
+
+      expect(result).to eq expected_mql
+    end
+  end
+
 end
