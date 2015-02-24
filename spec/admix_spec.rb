@@ -26,7 +26,7 @@ RSpec.describe AdmixApp do
       expect(@admix).to(have_received(:gets).exactly(@total_number_of_user_inputs))
     end
 
-    it "Asks user for client_id" do
+    it "Asks user for client secret" do
       @admix.start
 
       expect(@admix).to(have_received(:print).with("\nEnter Google Client Secret for installed Application\n=> ").once)
