@@ -23,11 +23,11 @@ class AdmixApp
     @manager = @auth_manager_class.new(client_id, client_secret, PATH_TO_FILE, user_email)
 
     client_access_token = @manager.access_token
-    if(!client_access_token)
-      print("\nSorry, the application could not complete Athu2 process!\n" )
+    if not client_access_token
+      print("\nSorry, the application could not complete Athu2 process!\n")
       return
     end
-    print("\nYou've authorized access to the application successfully!\n" )
+    print("\nYou've authorized access to the application successfully!\n")
   end
 
 
