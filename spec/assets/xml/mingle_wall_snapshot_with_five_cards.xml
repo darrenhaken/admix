@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<results type="array">
+  <result>
+    <name>Show tech articles in the project page</name>
+    <status>QA</status>
+    <type>Story</type>
+  </result>
+  <result>
+    <name>Copy assets from Drupal 6 to our CDN</name>
+    <status>Dev</status>
+    <type>Story</type>
+  </result>
+  <result>
+    <name>[Phoenix Server] Change showcase environment to use Phoenix Pattern</name>
+    <status>Dev done</status>
+    <type>Story</type>
+  </result>
+  <result>
+    <name>Make the application process page content editable</name>
+    <status>Next</status>
+    <type>Story</type>
+  </result>
+  <result>
+    <name>Show insight articles in the welcome page</name>
+    <status>Next</status>
+    <type>Defect</type>
+  </result>
+  <result>
+    <name>Show insight articles in the profile page</name>
+    <status>Next</status>
+    <type>Defect</type>
+  </result>
+  <result>
+    <name>Use the Hacienda gem in the content service</name>
+    <status>Dev done</status>
+    <type>Power Ups</type>
+  </result>
+</results>

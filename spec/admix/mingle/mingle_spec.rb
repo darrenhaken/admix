@@ -1,47 +1,77 @@
 require 'rspec'
-require 'rest-client'
-require 'nokogiri'
-require 'date'
+
 require_relative '../../../spec/admix/spec_helper'
-require_relative '../../../lib/admix/mingle/mingle'
+require_relative '../../../lib/admix/mingle/mingle_wall_snapshot'
+require_relative '../../../lib/admix/mingle/mingle_card'
 
-module Admix
+RSpec.describe MingleWallSnapshot do
 
-  RSpec.describe MingleWallSnapshot do
-    let(:file){File.expand_path('../../../assets/mingle_story_response.xml',__FILE__)}
-    let(:mingle_stories_xml) {File.read(file)}
+  before(:all) do
+    @xml_path = File.expand_path('../../../assets/xml/',__FILE__)
+    @xml_file = @xml_path + '/mingle_wall_snapshot_with_five_cards.xml'
+    @xml_string = File.read(@xml_file)
+  end
 
-    subject(:mingle_story_wall_snapshot) {MingleWallSnapshot.new(mingle_stories_xml)}
+  describe "Initialises MingleWallSnapshot from an XML string" do
+    before(:each) do
+      @mingle_wall = MingleWallSnapshot.new(@xml_string)
+    end
 
-    describe 'MingleWallSnapshot' do
-      
-      it 'should return number of cards with a status of \'New Customer Request\'' do
-      	expect(mingle_story_wall_snapshot.number_of_cards_with_status("New Customer Request")).to eq 1
-      end
+    it "creates MingleWallSnapshot and returns an array of MingleCard objects" do
+      expect(@mingle_wall.cards.all? {|card| card.is_a? MingleCard}).to be true
+    end
 
-      it 'should return the number one, indicating that a single card has gone live in the last 24 hours' do
-        expect(mingle_story_wall_snapshot.number_of_cards_that_went_live_since(Date.parse('2015-01-13'), "Done (Deployed to Live)")).to eq 1
-      end
-
-      it 'should return then number zero, indicating that no stories have gone live in the last 24 hours' do
-     	expect(mingle_story_wall_snapshot.number_of_cards_that_went_live_since(Date.parse('2015-01-14'), "Done (Deployed to Live)")).to eq 0
-      end
+    it "creates MingleWallSnapshot and returns an array of 5 MingleCard objects" do
+      expect(@mingle_wall.cards.length).to be 7
     end
   end
 
-  # RSpec.describe CumulativeFlowDiagramSpreadsheet do
-  #
-  #   let(:cfd_spreadsheet) {CumulativeFlowDiagramSpreadsheet.new}
-  #
-  #   describe CumulativeFlowDiagramSpreadsheet do
-  #
-  #     it 'should authenticate with Google Drive' do
-  #       client = cfd_spreadsheet.build_client 'afahie@thoughtworks.com'
-  #       file = cfd_spreadsheet.get_file_metadata client, '0AqgwNq-F1tXfdEtFaEx4T0lmV3FrcmhjcEFBQzhxc1E'
-  #       #puts cfd_spreadsheet.download_file client, file
-  #     end
-  #
-  #   end
-  # end
+  describe "Returns card statistics based on card property" do
+
+    before(:all) do
+      @mingle_wall = MingleWallSnapshot.new(@xml_string)
+    end
+
+    it "return nill when given a Type that is not supported" do
+      expect(@mingle_wall.number_of_cards_of_type('not supported type')).to be_nil
+    end
+
+    it "returns 4 as number of cards of type Story" do
+      expect(@mingle_wall.number_of_cards_of_type('Story')).to eq 4
+    end
+
+    it "returns 2 as number of cards of type Story" do
+      expect(@mingle_wall.number_of_cards_of_type('Defect')).to eq 2
+    end
+
+    it "returns 1 as number of cards of type Story" do
+      expect(@mingle_wall.number_of_cards_of_type('Power Ups')).to eq 1
+    end
+
+    it "returns 0 when no cards for the given Type is not found" do
+      expect(@mingle_wall.number_of_cards_of_type('TWS Content')).to eq 0
+    end
+
+    it "return nill when given a Status that is not supported" do
+      expect(@mingle_wall.number_of_cards_with_status('not supported status')).to be_nil
+    end
+
+    it "return 3 as number of cards in Status 'Next'" do
+      expect(@mingle_wall.number_of_cards_with_status('Next')).to be 3
+    end
+
+    it "return 2 as number of cards in Status 'Dev done'" do
+      expect(@mingle_wall.number_of_cards_with_status('Dev done')).to be 2
+    end
+
+    it "return 1 as number of cards in Status 'Dev'" do
+      expect(@mingle_wall.number_of_cards_with_status('Dev')).to be 1
+    end
+
+    it "return 0 when no cards for the given Status is not found" do
+      expect(@mingle_wall.number_of_cards_with_status('A & D')).to be 0
+    end
+
+  end
 
 end
