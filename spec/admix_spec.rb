@@ -2,22 +2,114 @@ require 'rspec'
 
 require_relative '../lib/admix/google_drive/installed_app_authentication_manager'
 require_relative '../lib/admix/admix'
+require_relative '../lib/admix/mingle/mingle_api_wrapper'
+require_relative '../lib/admix/mingle/mingle_wall_snapshot'
+require_relative '../lib/admix/mingle/mql_wrapper'
 
 RSpec.describe AdmixApp do
 
-  describe "Allow the user to authorise access to the application (client)" do
+  before(:all) do
+    @manager_class = InstalledApplication::AuthenticationManager
+    @admix = AdmixApp.new(@manager_class)
+    @total_number_of_user_inputs = 8
+  end
+
+  before(:each) do
+    allow_any_instance_of(AdmixApp).to receive(:print)
+    allow_any_instance_of(AdmixApp).to receive(:gets).and_return("")
+
+    allow_any_instance_of(MQLWrapper).to receive(:initialize).and_return(anything)
+    allow_any_instance_of(MQLWrapper).to receive(:parseYAML).and_return(anything)
+
+    allow_any_instance_of(MingleAPIWrapper).to receive(:get_cards_for_project).and_return(anything)
+    allow_any_instance_of(MingleWallSnapshot).to receive(:initialize).and_return(anything)
+
+    allow_any_instance_of(InstalledApplication::AuthenticationManager).to receive(:access_token).and_return("an_access_token")
+  end
+
+  describe "Create dependent objects" do
 
     before(:all) do
       @manager_class = InstalledApplication::AuthenticationManager
       @admix = AdmixApp.new(@manager_class)
-      @total_number_of_user_inputs = 3
     end
 
     before(:each) do
-      allow_any_instance_of(AdmixApp).to receive(:print)
-      allow_any_instance_of(AdmixApp).to receive(:gets).and_return("")
-      allow_any_instance_of(InstalledApplication::AuthenticationManager).to receive(:access_token).and_return("an_access_token")
+      @user_input = "user_input"
+      allow_any_instance_of(AdmixApp).to receive(:gets).and_return(@user_input)
     end
+
+    it "Creates AuthenticationManager from user inputs" do
+      expected_receive = receive(:initialize).with(@user_input, @user_input, anything, @user_input)
+
+      expect_any_instance_of(InstalledApplication::AuthenticationManager).to(expected_receive.once)
+
+      @admix.start
+    end
+
+    it "Creates MingleApiWrapper from user inputs" do
+      expected_receive = receive(:initialize).with(@user_input, @user_input, @user_input, RestClient)
+      expect_any_instance_of(MingleAPIWrapper).to(expected_receive.once)
+
+      @admix.start
+    end
+
+    it 'Creates MQLWrapper from file input' do
+      expected_receive = receive(:initialize).with(@user_input, 'SELECT name, type, status WHERE')
+      expect_any_instance_of(MQLWrapper).to(expected_receive.once)
+
+      @admix.start
+    end
+
+    it "Creates MingleWallSnapshot" do
+      mingle_xml = File.read(File.expand_path('../assets/xml/mingle_wall_snapshot_with_five_cards.xml', __FILE__))
+      allow_any_instance_of(MingleAPIWrapper).to receive(:get_cards_for_project).and_return(mingle_xml)
+
+      expect_any_instance_of(MingleWallSnapshot).to receive(:initialize).with(mingle_xml)
+
+      @admix.start
+    end
+  end
+
+  describe "Prompt the user for mingle details" do
+
+    it 'Asks user for mingle username' do
+      @admix.start
+
+      expect(@admix).to(have_received(:print).with("\nEnter Mingle username \n=> ").once)
+      expect(@admix).to(have_received(:gets).exactly(@total_number_of_user_inputs))
+    end
+
+    it 'Asks user for mingle password' do
+      @admix.start
+
+      expect(@admix).to(have_received(:print).with("\nEnter Mingle password \n=> ").once)
+      expect(@admix).to(have_received(:gets).exactly(@total_number_of_user_inputs))
+    end
+
+    it "Asks user for mingle URL" do
+      @admix.start
+
+      expect(@admix).to(have_received(:print).with("\nEnter Mingle URL (without https/http and project name) \n=> ").once)
+      expect(@admix).to(have_received(:gets).exactly(@total_number_of_user_inputs))
+    end
+
+    it "Asks user for mingle project name" do
+      @admix.start
+
+      expect(@admix).to(have_received(:print).with("\nEnter Mingle project name \n=> ").once)
+      expect(@admix).to(have_received(:gets).exactly(@total_number_of_user_inputs))
+    end
+
+    it "Asks user for mingle wall filter file" do
+      @admix.start
+
+      expect(@admix).to(have_received(:print).with("\nEnter path to mingle filter file \n=> ").once)
+      expect(@admix).to(have_received(:gets).exactly(@total_number_of_user_inputs))
+    end
+  end
+
+  describe "Allow the user to authorise access to the application (client)" do
 
     it "Asks user for client_id" do
       @admix.start
