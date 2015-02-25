@@ -1,0 +1,9 @@
+google_details:
+  client_account: 'fake account'
+  client_secret: 'fake secret'
+
+mingle_details:
+  username: 'anyusername'
+  password: 'apassword!'
+  url: 'URL to Mingle page'
+  project_name: 'name_of_project'

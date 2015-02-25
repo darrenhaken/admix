@@ -1,0 +1,9 @@
+client_account: 'fake account'
+client_secret: 'fake secret'
+user_email: 'random@email.com'
+
+mingle_details:
+ username: 'anyusername'
+ password: 'apassword!'
+ url: 'URL to Mingle page'
+ project_name: 'name_of_project'

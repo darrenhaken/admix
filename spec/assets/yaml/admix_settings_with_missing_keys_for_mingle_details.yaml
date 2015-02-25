@@ -1,0 +1,9 @@
+google_details:
+  client_account: 'fake account'
+  client_secret: 'fake secret'
+  user_email: whatever
+
+mingle_details:
+  username: 'anyusername'
+  password: 'apassword!'
+  project_name: 'name_of_project'
