@@ -55,7 +55,7 @@ RSpec.describe AdmixApp do
     end
 
     it 'Creates MQLWrapper from file input' do
-      expected_receive = receive(:initialize).with(@user_input, 'SELECT name, type, status WHERE')
+      expected_receive = receive(:initialize).with(@user_input, 'name, type, status')
       expect_any_instance_of(MQLWrapper).to(expected_receive.once)
 
       @admix.start
@@ -63,7 +63,7 @@ RSpec.describe AdmixApp do
 
     it "Creates MingleWallSnapshot" do
       mingle_xml = File.read(File.expand_path('../assets/xml/mingle_wall_snapshot_with_five_cards.xml', __FILE__))
-      allow_any_instance_of(MingleAPIWrapper).to receive(:get_cards_for_project).and_return(mingle_xml)
+      allow_any_instance_of(MingleAPIWrapper).to receive(:resource).and_return(mingle_xml)
 
       expect_any_instance_of(MingleWallSnapshot).to receive(:initialize).with(mingle_xml)
 

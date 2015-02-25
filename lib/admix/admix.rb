@@ -39,9 +39,9 @@ class AdmixApp
     mingle_filter_file_path = gets.chomp
 
     @mingle_wrapper = MingleAPIWrapper.new(mingle_username, mingle_password, mingle_url, RestClient)
-    @mql_wrapper = MQLWrapper.new(mingle_filter_file_path, 'SELECT name, type, status WHERE')
-    xml_cards = @mingle_wrapper.get_cards_for_project(mingle_project_name, @mql_wrapper.parseYAML)
-    @mingle_wall = MingleWallSnapshot.new(xml_cards)
+    @mql_wrapper = MQLWrapper.new(mingle_filter_file_path, 'name, type, status')
+    @mingle_wrapper.get_cards_for_project(mingle_project_name, @mql_wrapper.parseYAML)
+    @mingle_wall = MingleWallSnapshot.new(@mingle_wrapper.resource)
   end
 
   def perform_google_auth
