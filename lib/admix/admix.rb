@@ -20,6 +20,30 @@ class AdmixApp
     setup_mingle
   end
 
+  def print_statatistics
+    print_card_statistics_for_type('Story')
+    print_card_statistics_for_type('Defect')
+    print_card_statistics_for_type('Power Ups')
+
+    print_card_statistics_for_status('Next')
+    print_card_statistics_for_status('A & D')
+    print_card_statistics_for_status('A & D done')
+    print_card_statistics_for_status('Dev')
+    print_card_statistics_for_status('Dev done')
+    print_card_statistics_for_status('QA')
+    print_card_statistics_for_status('QA done')
+  end
+
+  def print_card_statistics_for_type(type)
+    number = @mingle_wall.number_of_cards_of_type(type)
+    print("Number of cards with Type #{type}: #{number}\n")
+  end
+
+  def print_card_statistics_for_status(status)
+    number = @mingle_wall.number_of_cards_with_status(status)
+    print("Number of cards in Status #{status}: #{number} \n")
+  end
+
   private
 
   def setup_mingle
@@ -63,6 +87,4 @@ class AdmixApp
     end
     print("\nYou've authorized access to the application successfully!\n")
   end
-
-
 end
