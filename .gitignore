@@ -40,3 +40,4 @@ build/
 
 #Mac OSX
 *.DS_Store
+lib/admix/admix_settings.yaml
