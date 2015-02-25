@@ -24,13 +24,9 @@ class MingleAPIWrapper
     @resource
   end
 
-  def get_cards_for_project(project_name, filter_by_mql=nil)
+  def get_cards_for_project(project_name, filter_by_mql)
     cards_url = full_rest_resource(project_name)
-    if filter_by_mql
-      response = @rest_client.get(cards_url, {:params => {:mql=>filter_by_mql}})
-    else
-      response = @rest_client.get(cards_url)
-    end
+    response = @rest_client.get(cards_url, {:params => {:mql=>filter_by_mql}})
 
     if response.code == 200
       @resource = response.body
@@ -41,13 +37,9 @@ class MingleAPIWrapper
     false
   end
 
-  def full_rest_resource(project_name=nil)
-    if project_name
-      return "https://%s:%s@%s/api/v2/projects/%s/cards.xml" %
-                           [@username, @password, @mingle_url, project_name]
-    end
-
-    "https://%s:%s@%s/api/v2/projects.xml" % [@username, @password, @mingle_url]
+  def full_rest_resource(project_name)
+      url = "https://%s:%s@%s/api/v2/projects/%s/cards/execute_mql.xml" % \
+            [@username, @password, @mingle_url, project_name]
   end
 
 end
