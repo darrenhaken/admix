@@ -1,5 +1,5 @@
 
-class MingleAPIAuthenticationError < TypeError
+class MingleAuthenticationError < TypeError
 
   attr_reader :message
 
@@ -9,7 +9,7 @@ class MingleAPIAuthenticationError < TypeError
 
 end
 
-class MingleAPIWrapper
+class MingleResourceLoader
 
   attr_reader :resource
 
@@ -24,7 +24,7 @@ class MingleAPIWrapper
     @resource
   end
 
-  def get_cards_for_project(project_name, filter_by_mql)
+  def load_cards_for_project(project_name, filter_by_mql)
     cards_url = full_rest_resource(project_name)
     response = @rest_client.get(cards_url, {:params => {:mql=>filter_by_mql}})
 
@@ -32,14 +32,13 @@ class MingleAPIWrapper
       @resource = response.body
       return true
     elsif response.code == 401
-      raise MingleAPIAuthenticationError.new("Authentication fails Wrong username/password")
+      raise MingleAuthenticationError.new("Authentication fails wrong username/password")
     end
     false
   end
 
   def full_rest_resource(project_name)
-      url = "https://%s:%s@%s/api/v2/projects/%s/cards/execute_mql.xml" % \
-            [@username, @password, @mingle_url, project_name]
+    "https://%s:%s@%s/api/v2/projects/%s/cards/execute_mql.xml" % [@username, @password, @mingle_url, project_name]
   end
 
 end

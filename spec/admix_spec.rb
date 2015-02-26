@@ -2,7 +2,7 @@ require 'rspec'
 
 require_relative '../lib/admix/google_drive/installed_app_authentication_manager'
 require_relative '../lib/admix/admix'
-require_relative '../lib/admix/mingle/mingle_api_wrapper'
+require_relative '../lib/admix/mingle/mingle_resource_loader'
 require_relative '../lib/admix/mingle/mingle_wall_snapshot'
 require_relative '../lib/admix/mingle/mql_wrapper'
 require_relative '../lib/admix/settings'
@@ -31,7 +31,7 @@ RSpec.describe AdmixApp do
     allow_any_instance_of(MQLWrapper).to receive(:initialize).and_return(anything)
     allow_any_instance_of(MQLWrapper).to receive(:parseYAML).and_return(anything)
 
-    allow_any_instance_of(MingleAPIWrapper).to receive(:get_cards_for_project).and_return(anything)
+    allow_any_instance_of(MingleResourceLoader).to receive(:load_cards_for_project).and_return(anything)
     allow_any_instance_of(MingleWallSnapshot).to receive(:initialize).and_return(anything)
 
     allow_any_instance_of(InstalledApplication::AuthenticationManager).to receive(:access_token).and_return("an_access_token")
@@ -74,14 +74,14 @@ RSpec.describe AdmixApp do
 
     it "Creates MingleApiWrapper from user inputs" do
       expected_receive = receive(:initialize).with(@user_input, @user_input, @user_input, RestClient)
-      expect_any_instance_of(MingleAPIWrapper).to(expected_receive.once)
+      expect_any_instance_of(MingleResourceLoader).to(expected_receive.once)
 
       @admix.start_from_cml
     end
 
     it "Creates MingleApiWrapper from settings" do
       expected_receive = receive(:initialize).with('anything', 'anything', 'anything', RestClient)
-      expect_any_instance_of(MingleAPIWrapper).to(expected_receive.once)
+      expect_any_instance_of(MingleResourceLoader).to(expected_receive.once)
 
       @admix.start_from_settings
     end
@@ -102,7 +102,7 @@ RSpec.describe AdmixApp do
 
     it "Creates MingleWallSnapshot" do
       mingle_xml = File.read(File.expand_path('../assets/xml/mingle_wall_snapshot_with_five_cards.xml', __FILE__))
-      allow_any_instance_of(MingleAPIWrapper).to receive(:resource).and_return(mingle_xml)
+      allow_any_instance_of(MingleResourceLoader).to receive(:resource).and_return(mingle_xml)
 
       expect_any_instance_of(MingleWallSnapshot).to receive(:initialize).with(mingle_xml)
 
