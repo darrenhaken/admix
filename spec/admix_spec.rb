@@ -112,7 +112,7 @@ RSpec.describe AdmixApp do
 
   describe "Read config files names from command line" do
 
-    it "It uses the first argument as application settings, and second as filter file" do
+    it "Uses the first argument as application settings, and second as filter file" do
       stub_const("ARGV", ['setting.yaml', 'filter.yaml'])
 
       expect(ARGV).to receive(:at).with(0).once
@@ -121,13 +121,13 @@ RSpec.describe AdmixApp do
       @admix.start_from_settings
     end
 
-    it "It exists when the ARGV length is less than 2" do
+    it "Exists when the ARGV length is less than 2" do
       stub_const("ARGV", [])
 
       expect{@admix.start_from_settings}.to raise_error SystemExit
     end
 
-    it "It exists when the ARGV length is larger than 2" do
+    it "Exists when the ARGV length is larger than 2" do
       stub_const("ARGV", ['1', '2', '3'])
 
       expect{@admix.start_from_settings}.to raise_error SystemExit
