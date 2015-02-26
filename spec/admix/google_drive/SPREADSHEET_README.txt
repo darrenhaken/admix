@@ -1,11 +1,11 @@
-1- open ruby in the terminal (irb) while you're in admix directory
+1- open ruby in the terminal (irb) while you're in admix directory (/admix)
 2- type the following:
     > require_relitave "lib/google_drive_client_manager"
     > manager = AuthenticationManagerForInstalledAppClient.new(YOUR_CLIENT_ID, YOUR_CLIENT_SECRET, ANY_FILE_TO_WRITE_TO,
                                                                 "admixmingle@gmail.com")
     > manager.access_token
-3- This will prompt you to open the link, which is printed.
-4- open the link to grant access to your client for "admixmingle@gmail.com" (or the email address you're using for test)
+3- This will prompt you to open a link, which is printed.
+4- open the link to grant access to your client for "admixmingle@gmail.com" (or the email address you're using for your test)
 5- Once granted, copy the authorisation code from the browser.
 6- terminate `irb` (DO NOT PASTE IT HERE YET).
 7- open `google_driver_spec.rb` and go to `GoogleSheetHelper` setup method.

@@ -31,7 +31,7 @@ RSpec.describe GoogleSheetHelper do
   end
 
   before(:each) do
-    #Whenever the authorization fails, just manually generate authorization code and put it here
+    # Whenever the authorization fails, just manually generate authorization code and put it here
     # Then open DO_NOT_OPEN_OR_CHANGE_ME.json and copy all the values to token_hash above
     # The instruction is written in SPREADSHEET_README.txt
 
@@ -53,9 +53,4 @@ RSpec.describe GoogleSheetHelper do
       expect(file.title).to eq "Admix"
     end
   end
-
-  describe "Modify files" do
-
-  end
-
 end
