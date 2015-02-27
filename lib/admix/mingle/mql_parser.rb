@@ -1,6 +1,6 @@
 require 'yaml'
 
-class MQLWrapper
+class MQLParser
 
   OR = " OR "
   AND = " AND "
@@ -10,7 +10,7 @@ class MQLWrapper
     @mql_select_statement = "SELECT #{select_elements_statement} WHERE "
   end
 
-  def parseYAML
+  def parse
     filters = yaml_filters
     mql_for_types = get_types(filters)
     mql_for_status = get_status(filters)

@@ -4,7 +4,7 @@ require_relative '../lib/admix/google_drive/installed_app_authentication_manager
 require_relative '../lib/admix/admix'
 require_relative '../lib/admix/mingle/mingle_resource_loader'
 require_relative '../lib/admix/mingle/mingle_wall_snapshot'
-require_relative '../lib/admix/mingle/mql_wrapper'
+require_relative '../lib/admix/mingle/mql_parser'
 require_relative '../lib/admix/settings'
 
 RSpec.describe AdmixApp do
@@ -28,10 +28,10 @@ RSpec.describe AdmixApp do
     allow_any_instance_of(AdmixApp).to receive(:print)
     allow_any_instance_of(AdmixApp).to receive(:gets).and_return("")
 
-    allow_any_instance_of(MQLWrapper).to receive(:initialize).and_return(anything)
-    allow_any_instance_of(MQLWrapper).to receive(:parseYAML).and_return(anything)
+    allow_any_instance_of(MQLParser).to receive(:initialize).and_return(anything)
+    allow_any_instance_of(MQLParser).to receive(:parse).and_return(anything)
 
-    allow_any_instance_of(MingleResourceLoader).to receive(:load_cards_for_project).and_return(anything)
+    allow_any_instance_of(MingleResourceLoader).to receive(:load_cards_for_project?).and_return(anything)
     allow_any_instance_of(MingleWallSnapshot).to receive(:initialize).and_return(anything)
 
     allow_any_instance_of(InstalledApplication::AuthenticationManager).to receive(:access_token).and_return("an_access_token")
@@ -86,16 +86,16 @@ RSpec.describe AdmixApp do
       @admix.start_from_settings
     end
 
-    it 'Creates MQLWrapper from file input' do
+    it 'Creates MQLParser from file input' do
       expected_receive = receive(:initialize).with(@admix_app_path+'/'+@user_input, 'name, type, status')
-      expect_any_instance_of(MQLWrapper).to(expected_receive.once)
+      expect_any_instance_of(MQLParser).to(expected_receive.once)
 
       @admix.start_from_cml
     end
 
-    it 'Creates MQLWrapper from command line file name' do
+    it 'Creates MQLParser from command line file name' do
       expected_receive = receive(:initialize).with(@admix_app_path + '/filter.yaml', 'name, type, status')
-      expect_any_instance_of(MQLWrapper).to(expected_receive.once)
+      expect_any_instance_of(MQLParser).to(expected_receive.once)
 
       @admix.start_from_settings
     end
