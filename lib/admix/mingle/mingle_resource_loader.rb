@@ -24,7 +24,7 @@ class MingleResourceLoader
     @resource
   end
 
-  def load_cards_for_project(project_name, filter_by_mql)
+  def load_cards_for_project?(project_name, filter_by_mql)
     cards_url = full_rest_resource(project_name)
     response = @rest_client.get(cards_url, {:params => {:mql=>filter_by_mql}})
 
