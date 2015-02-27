@@ -5,7 +5,7 @@ require_relative 'version'
 require_relative '../../lib/admix/google_drive/installed_app_authentication_manager'
 require_relative '../../lib/admix/mingle/mingle_resource_loader'
 require_relative '../../lib/admix/mingle/mingle_wall_snapshot'
-require_relative '../../lib/admix/mingle/mql_wrapper'
+require_relative '../../lib/admix/mingle/mql_parser'
 require_relative '../../lib/admix/settings'
 
 class AdmixApp
@@ -91,8 +91,8 @@ class AdmixApp
   def create_mingle_with(mingle_username, mingle_password, mingle_url, mingle_project_name, filter_file_name)
     @mingle_wrapper = MingleResourceLoader.new(mingle_username, mingle_password, mingle_url, RestClient)
     full_path_to_file = File.expand_path("../#{filter_file_name}", __FILE__)
-    @mql_wrapper = MQLWrapper.new(full_path_to_file, 'name, type, status')
-    @mingle_wrapper.load_cards_for_project(mingle_project_name, @mql_wrapper.parseYAML)
+    @mql_wrapper = MQLParser.new(full_path_to_file, 'name, type, status')
+    @mingle_wrapper.load_cards_for_project?(mingle_project_name, @mql_wrapper.parse)
     @mingle_wall = MingleWallSnapshot.new(@mingle_wrapper.resource)
   end
 
