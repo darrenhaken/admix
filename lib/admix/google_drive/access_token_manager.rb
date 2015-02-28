@@ -49,6 +49,10 @@ class AccessTokenManager
     end
   end
 
+  def authorization_uri
+    @auth.authorization_uri
+  end
+
   private
 
   def username_eq_user_email(user_email)
