@@ -1,6 +1,6 @@
 class GoogleClientSettings
 
-  attr_reader client_id, client_secret, user_email
+  attr_reader :client_id, :client_secret, :user_email
 
   def initialize(client_id, client_secret, user_email)
     @client_id = client_id
