@@ -26,8 +26,8 @@ RSpec.describe GoogleSheetHelper do
     end
 
     manager = installed::AuthenticationManager.new(@client_id, @client_secret, file,@user_email)
-
-    @spreadsheetHelper = GoogleSheetHelper.new(manager)
+    access_token = manager.access_token
+    @spreadsheetHelper = GoogleSheetHelper.new(access_token)
   end
 
   before(:each) do

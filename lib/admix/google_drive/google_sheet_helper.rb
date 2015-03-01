@@ -2,10 +2,8 @@ require 'google_drive'
 
 class GoogleSheetHelper
 
-  def initialize(client_manager)
-    @client_manager = client_manager
-    @access_token = @client_manager.access_token
-    @session = GoogleDrive.login_with_oauth(@access_token)
+  def initialize(access_token)
+    @session = GoogleDrive.login_with_oauth(access_token)
   end
 
   def list_all_files
