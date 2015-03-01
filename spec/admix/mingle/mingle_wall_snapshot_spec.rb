@@ -21,7 +21,7 @@ RSpec.describe MingleWallSnapshot do
       expect(@mingle_wall.cards.all? {|card| card.is_a? MingleCard}).to be true
     end
 
-    it "creates MingleWallSnapshot and returns an array of 5 MingleCard objects" do
+    it "creates MingleWallSnapshot and returns an array of 7 MingleCard objects" do
       expect(@mingle_wall.cards.length).to be 7
     end
   end

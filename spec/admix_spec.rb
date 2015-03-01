@@ -45,23 +45,22 @@ RSpec.describe AdmixApp do
       @user_input = "user_input"
       allow_any_instance_of(AdmixApp).to receive(:gets).and_return(@user_input)
       stub_const("ARGV", ['setting.yaml', 'filter.yaml'])
+      google_settings = GoogleClientSettings.new('client_id', 'client_password', 'client_user_email')
+      allow(@settings).to receive(:google_client_settings){google_settings}
+
+      mingle_settings = MingleSettings.new('username', 'password', 'uri', 'project name')
+      allow(@settings).to receive(:mingle_settings){mingle_settings}
     end
 
-    it "Loads application settings from command line argument file name" do
-      expect_any_instance_of(Settings).to(receive(:load!).with('setting.yaml').once)
-
-      @admix.start_from_settings
-    end
-
-    it "Creates MingleApiWrapper from user inputs" do
+    it "Creates MingleResourceLoader from user inputs" do
       expected_receive = receive(:initialize).with(@user_input, @user_input, @user_input, RestClient)
       expect_any_instance_of(MingleResourceLoader).to(expected_receive.once)
 
       @admix.start_from_cml
     end
 
-    it "Creates MingleApiWrapper from settings" do
-      expected_receive = receive(:initialize).with('anything', 'anything', 'anything', RestClient)
+    it "Creates MingleResourceLoader from settings" do
+      expected_receive = receive(:initialize).with('username', 'password', 'uri', RestClient)
       expect_any_instance_of(MingleResourceLoader).to(expected_receive.once)
 
       @admix.start_from_settings
@@ -76,6 +75,7 @@ RSpec.describe AdmixApp do
 
     it 'Creates MQLParser from command line file name' do
       expected_receive = receive(:initialize).with(@admix_app_path + '/filter.yaml', 'name, type, status')
+      allow(@settings).to receive(:filter_file){'filter.yaml'}
       expect_any_instance_of(MQLParser).to(expected_receive.once)
 
       @admix.start_from_settings

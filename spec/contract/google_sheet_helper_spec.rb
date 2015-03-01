@@ -8,6 +8,7 @@ require_relative '../../../lib/admix/google_drive/google_client_settings'
 
 RSpec.describe GoogleSheetHelper do
 
+  #TODO find a way to pass these details via ENV, then revoke acceess, then regrant it again
   before(:all) do
     @client_id ="157478480211-fqa6jd2lucmssqcjvpra07ih39u93etu.apps.googleusercontent.com"
     @client_secret = "oSAoSvc0dxg4H-VTI3OBXLyV"

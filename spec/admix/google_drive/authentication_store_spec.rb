@@ -41,7 +41,7 @@ RSpec.describe AuthenticationStore do
     expect(result).to be_a Hash and expect(result.empty?).to be false
   end
 
-  it 'caontains authentication keys in the returned Hash object' do
+  it 'contains authentication keys in the returned Hash object' do
     create_file(@auth_json_file)
 
     result = @store.load_stored_credentials(@auth_json_file)
@@ -49,7 +49,7 @@ RSpec.describe AuthenticationStore do
     expect(result.keys).to contain_exactly(:access_token, :refresh_token, :expires_in, :expires_at, :user_email)
   end
 
-  it 'caontains authentication details found in the file in the returned Hash object' do
+  it 'contains authentication details found in the file in the returned Hash object' do
     create_file(@auth_json_file)
 
     result = @store.load_stored_credentials(@auth_json_file)
@@ -67,7 +67,7 @@ RSpec.describe AuthenticationStore do
     expect(result).to be_nil
   end
 
-  it 'stores Hash data in a file and return true' do
+  it 'stores authorization credentials in a file and return true' do
     auth_credentials = mock_auth_credentials
     File.open(@auth_json_file, 'w+'){
       #delete file content
@@ -78,7 +78,7 @@ RSpec.describe AuthenticationStore do
     expect(result).to be true
   end
 
-  it 'writes the Hash object in file in a JSON format' do
+  it 'writes the authorization credentials in file in a JSON format' do
     File.open(@auth_json_file, 'w+'){}
     auth_credentials = mock_auth_credentials
 
