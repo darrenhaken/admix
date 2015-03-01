@@ -68,11 +68,12 @@ RSpec.describe AuthenticationStore do
   end
 
   it 'stores Hash data in a file and return true' do
+    auth_credentials = mock_auth_credentials
     File.open(@auth_json_file, 'w+'){
       #delete file content
     }
 
-    result = @store.save_credentials_in_file(@token_hash, @auth_json_file)
+    result = @store.save_credentials_in_file(auth_credentials, @auth_json_file)
 
     expect(result).to be true
   end
