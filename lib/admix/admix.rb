@@ -2,19 +2,18 @@ require 'rest_client'
 
 require_relative 'version'
 
-require_relative '../../lib/admix/google_drive/installed_app_authentication_manager'
+require_relative '../../lib/admix/google_drive/google_controller'
+require_relative '../../lib/admix/google_drive/google_client_settings'
+
 require_relative '../../lib/admix/mingle/mingle_resource_loader'
 require_relative '../../lib/admix/mingle/mingle_wall_snapshot'
 require_relative '../../lib/admix/mingle/mql_parser'
+
 require_relative '../../lib/admix/settings'
 
 class AdmixApp
 
   PATH_TO_FILE = File.expand_path('../../assets/auth_details.json',__FILE__)
-
-  def initialize(auth_manager_class)
-    @auth_manager_class = auth_manager_class
-  end
 
   def start_from_cml
     perform_google_auth
@@ -110,10 +109,12 @@ class AdmixApp
   end
 
   def create_manager_with(client_id, client_secret, user_email)
-    @manager = @auth_manager_class.new(client_id, client_secret, PATH_TO_FILE, user_email)
+    google_settings = GoogleClientSettings.new(client_id, client_secret, user_email)
+    @controller = GoogleController.new(google_settings, PATH_TO_FILE)
+    @controller.setup_controller
 
-    client_access_token = @manager.access_token
-    if not client_access_token
+    client_access_token = @controller.access_token
+    unless client_access_token
       print("\nSorry, the application could not complete Athu2 process!\n")
       return
     end

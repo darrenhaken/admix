@@ -3,9 +3,8 @@ require 'google_drive'
 
 require_relative '../../../spec/admix/spec_helper'
 require_relative '../../../lib/admix/google_drive/google_sheet_helper'
-require_relative '../../../lib/admix/google_drive/installed_app_authentication_manager'
-
-installed = InstalledApplication
+require_relative '../../../lib/admix/google_drive/google_controller'
+require_relative '../../../lib/admix/google_drive/google_client_settings'
 
 RSpec.describe GoogleSheetHelper do
 
@@ -24,9 +23,10 @@ RSpec.describe GoogleSheetHelper do
     File.open(file, 'w+') do |f|
       f.write(JSON.pretty_generate(token_hash))
     end
-
-    manager = installed::AuthenticationManager.new(@client_id, @client_secret, file,@user_email)
-    access_token = manager.access_token
+    settings = GoogleClientSettings.new(@client_id, @client_secret, @user_email)
+    controller = GoogleController.new(settings, file)
+    controller.setup_controller
+    access_token = controller.access_token
     @spreadsheetHelper = GoogleSheetHelper.new(access_token)
   end
 

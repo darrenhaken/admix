@@ -1,6 +1,5 @@
 require 'rspec'
 
-require_relative '../lib/admix/google_drive/installed_app_authentication_manager'
 require_relative '../lib/admix/admix'
 require_relative '../lib/admix/mingle/mingle_resource_loader'
 require_relative '../lib/admix/mingle/mingle_wall_snapshot'
@@ -11,8 +10,7 @@ RSpec.describe AdmixApp do
 
   before(:all) do
     @admix_app_path = File.absolute_path('../../lib/admix/',__FILE__)
-    @manager_class = InstalledApplication::AuthenticationManager
-    @admix = AdmixApp.new(@manager_class)
+    @admix = AdmixApp.new()
     @total_number_of_user_inputs = 8
   end
 
@@ -34,14 +32,13 @@ RSpec.describe AdmixApp do
     allow_any_instance_of(MingleResourceLoader).to receive(:load_cards_for_project?).and_return(anything)
     allow_any_instance_of(MingleWallSnapshot).to receive(:initialize).and_return(anything)
 
-    allow_any_instance_of(InstalledApplication::AuthenticationManager).to receive(:access_token).and_return("an_access_token")
+    allow_any_instance_of(GoogleController).to receive(:access_token).and_return("an_access_token")
   end
 
   describe "Create dependent objects" do
 
     before(:all) do
-      @manager_class = InstalledApplication::AuthenticationManager
-      @admix = AdmixApp.new(@manager_class)
+      @admix = AdmixApp.new()
     end
 
     before(:each) do
@@ -54,22 +51,6 @@ RSpec.describe AdmixApp do
       expect_any_instance_of(Settings).to(receive(:load!).with('setting.yaml').once)
 
       @admix.start_from_settings
-    end
-
-    it "Creates AuthenticationManager from settings" do
-      expected_receive = receive(:initialize).with('anything', 'anything', anything, 'anything')
-
-      expect_any_instance_of(InstalledApplication::AuthenticationManager).to(expected_receive.once)
-
-      @admix.start_from_settings
-    end
-
-    it "Creates AuthenticationManager from user inputs" do
-      expected_receive = receive(:initialize).with(@user_input, @user_input, anything, @user_input)
-
-      expect_any_instance_of(InstalledApplication::AuthenticationManager).to(expected_receive.once)
-
-      @admix.start_from_cml
     end
 
     it "Creates MingleApiWrapper from user inputs" do
@@ -196,7 +177,7 @@ RSpec.describe AdmixApp do
     end
 
     it "shows authorization success message when authorisation passes" do
-      allow_any_instance_of(InstalledApplication::AuthenticationManager).to receive(:access_token).and_return("an_access_token")
+      allow_any_instance_of(GoogleController).to receive(:access_token).and_return("an_access_token")
 
       @admix.start_from_cml
 
@@ -204,7 +185,7 @@ RSpec.describe AdmixApp do
     end
 
     it "shows a failure message when the authorisation/authentication fails" do
-      allow_any_instance_of(InstalledApplication::AuthenticationManager).to receive(:access_token).and_return(nil)
+      allow_any_instance_of(GoogleController).to receive(:access_token).and_return(nil)
 
       @admix.start_from_cml
 

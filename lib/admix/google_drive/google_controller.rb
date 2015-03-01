@@ -5,6 +5,8 @@ require_relative '../../../lib/admix/google_drive/access_token_manager'
 
 class GoogleController
 
+  attr_reader :access_token
+
   MAX_RETRIES = 3
 
   def initialize(google_settings, auth_file)
