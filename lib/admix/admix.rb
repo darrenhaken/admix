@@ -21,25 +21,13 @@ class AdmixApp
   end
 
   def start_from_settings
-    if ARGV.length != 2
-      exit(-1)
-    end
-    settings_file = ARGV.at(0)
-    filter_file = ARGV.at(1)
-
-    ARGV.clear
-
     settings = Settings.instance
-    begin
-      settings.load!(settings_file)
-    rescue AdmixSettingsError => e
-      print(e.error_message + "\n")
-      exit(-1)
-    end
+    settings.load_application_settings
+
     create_manager_with(settings.google_details['client_account'], settings.google_details['client_secret'],
                         settings.google_details['user_email'])
     create_mingle_with(settings.mingle_details['username'], settings.mingle_details['password'],
-                      settings.mingle_details['url'], settings.mingle_details['project_name'], filter_file)
+                      settings.mingle_details['url'], settings.mingle_details['project_name'], settings.filter_file)
   end
 
   def print_statistics

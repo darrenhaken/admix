@@ -91,30 +91,6 @@ RSpec.describe AdmixApp do
     end
   end
 
-  describe "Read config files names from command line" do
-
-    it "Uses the first argument as application settings, and second as filter file" do
-      stub_const("ARGV", ['setting.yaml', 'filter.yaml'])
-
-      expect(ARGV).to receive(:at).with(0).once
-      expect(ARGV).to receive(:at).with(1).once
-
-      @admix.start_from_settings
-    end
-
-    it "Exists when the ARGV length is less than 2" do
-      stub_const("ARGV", [])
-
-      expect{@admix.start_from_settings}.to raise_error SystemExit
-    end
-
-    it "Exists when the ARGV length is larger than 2" do
-      stub_const("ARGV", ['1', '2', '3'])
-
-      expect{@admix.start_from_settings}.to raise_error SystemExit
-    end
-  end
-
   describe "Prompt the user for mingle details" do
 
     it 'Asks user for mingle username' do

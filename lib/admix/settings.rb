@@ -15,6 +15,7 @@ end
 
 class Settings
 
+  attr_reader :filter_file
   include Singleton
 
   SETTINGS_KEYS = ['google_details', 'mingle_details']
@@ -25,9 +26,23 @@ class Settings
 
   @settings = {}
 
+  def load_application_settings()
+    if ARGV.length != 2
+      err_msg = "Wrong number of argument (first args is file settings, and the second arg is mingle filter)\n"
+      raise AdmixSettingsError.new(err_msg)
+    end
+    settings_file = ARGV[0]
+    @filter_file = ARGV[1]
+
+    load! settings_file
+    ARGV.clear
+  end
+
+  private
+
   def load!(filename)
     if(not File.exists?(filename))
-      raise AdmixSettingsError.new("file does not exist:  #{filename}")
+      raise AdmixSettingsError.new("file does not exist:  #{filename} \n")
     end
 
     @settings = YAML::load_file(filename)

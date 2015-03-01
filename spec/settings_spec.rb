@@ -9,9 +9,25 @@ RSpec.describe Settings do
     @setting = Settings.instance
   end
 
+  describe "Read config files names from command line" do
+
+    it "Exists when the ARGV length is less than 2" do
+      stub_const("ARGV", [])
+
+      expect{@setting.load_application_settings}.to raise_error AdmixSettingsError
+    end
+
+    it "Exists when the ARGV length is larger than 2" do
+      stub_const("ARGV", ['1', '2', '3'])
+
+      expect{@setting.load_application_settings}.to raise_error AdmixSettingsError
+    end
+  end
+
   describe 'Loads setting from setting yaml file' do
     it 'loads google credentials from settings file' do
-      @setting.load!(@path_to_file)
+      stub_const("ARGV", [@path_to_file, 'filter.yaml'])
+      @setting.load_application_settings
 
       expect(@setting.google_details['client_account']).to eq 'fake account'
       expect(@setting.google_details['client_secret']).to eq 'fake secret'
@@ -19,7 +35,8 @@ RSpec.describe Settings do
     end
 
     it 'loads mingle details from settings file' do
-      @setting.load!(@path_to_file)
+      stub_const("ARGV", [@path_to_file, 'filter.yaml'])
+      @setting.load_application_settings
 
       expect(@setting.mingle_details['username']).to eq 'anyusername'
       expect(@setting.mingle_details['password']).to eq 'apassword!'
@@ -31,32 +48,36 @@ RSpec.describe Settings do
   describe "Validates YAML Settings keys and raise AdmixSettingsError when a key is missing" do
     it "validates YAML for the missing 'google_details' key" do
       file = File.expand_path('../assets/yaml/admix_settings_with_missing_google_details.yaml', __FILE__)
+      stub_const("ARGV", [file, 'filter.yaml'])
 
-      expect {@setting.load!(file)}.to raise_error(AdmixSettingsError)
+      expect {@setting.load_application_settings}.to raise_error(AdmixSettingsError)
     end
 
     it "validates YAML for the missing 'mingle_details' key" do
       file = File.expand_path('../assets/yaml/admix_settings_with_missing_mingle_details.yaml', __FILE__)
+      stub_const("ARGV", [file, 'filter.yaml'])
 
-      expect {@setting.load!(file)}.to raise_error(AdmixSettingsError)
-    end
+      expect {@setting.load_application_settings}.to raise_error(AdmixSettingsError)    end
 
     it "validates YAML for missing 'google_details' keys" do
       file = File.expand_path('../assets/yaml/admix_settings_with_missing_keys_for_google_details.yaml', __FILE__)
+      stub_const("ARGV", [file, 'filter.yaml'])
 
-      expect {@setting.load!(file)}.to raise_error(AdmixSettingsError)
+      expect {@setting.load_application_settings}.to raise_error(AdmixSettingsError)
     end
 
     it "validates YAML for missing 'mingle_details' keys" do
       file = File.expand_path('../assets/yaml/admix_settings_with_missing_keys_for_mingle_details.yaml', __FILE__)
+      stub_const("ARGV", [file, 'filter.yaml'])
 
-      expect {@setting.load!(file)}.to raise_error(AdmixSettingsError)
+      expect {@setting.load_application_settings}.to raise_error(AdmixSettingsError)
     end
   end
 
   it 'Raises AdmixSettingsError when file is not found' do
     file = File.expand_path('../assets/yaml/does_not_exist.yaml', __FILE__)
+    stub_const("ARGV", [file, 'filter.yaml'])
 
-    expect {@setting.load!(file)}.to raise_error(AdmixSettingsError)
+    expect {@setting.load_application_settings}.to raise_error(AdmixSettingsError)
   end
 end
