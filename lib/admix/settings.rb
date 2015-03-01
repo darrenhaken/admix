@@ -3,6 +3,9 @@
 require 'yaml'
 require 'singleton'
 
+require_relative '../../lib/admix/google_drive/google_client_settings'
+require_relative '../../lib/admix/mingle/mingle_settings'
+
 class AdmixSettingsError < TypeError
 
   attr_reader :error_message
@@ -16,6 +19,8 @@ end
 class Settings
 
   attr_reader :filter_file
+  attr_reader :google_client_settings, :mingle_settings
+
   include Singleton
 
   SETTINGS_KEYS = ['google_details', 'mingle_details']
@@ -54,11 +59,23 @@ class Settings
   def setup_settings
     if @settings.is_a?(Hash)
       check_settings_keys(@settings.keys)
-      @settings.each do |k, v|
-        check_details_keys_for(k, v)
-        create_attribute(k, v)
-      end
+      create_google_settings
+      create_mingle_settings
     end
+  end
+
+  def create_mingle_settings
+    mingle_details = @settings['mingle_details']
+    check_details_keys_for('mingle_details', mingle_details)
+    @mingle_settings = MingleSettings.new(mingle_details['username'], mingle_details['password'],
+                                                 mingle_details['url'], mingle_details['project_name'])
+  end
+
+  def create_google_settings
+    google_details = @settings['google_details']
+    check_details_keys_for('google_details', google_details)
+    @google_client_settings = GoogleClientSettings.new(google_details['client_account'], google_details['client_secret'],
+                                                       google_details['user_email'])
   end
 
   def check_details_keys_for(k, v)
@@ -74,11 +91,5 @@ class Settings
     unless keys_missing.empty?
       raise AdmixSettingsError.new("Settings Key/s missing: #{keys_missing}")
     end
-  end
-
-  def create_attribute(k, v)
-    attribute = k.to_sym
-    self.class.module_eval {attr_accessor attribute}
-    self.send("#{attribute}=",v)
   end
 end

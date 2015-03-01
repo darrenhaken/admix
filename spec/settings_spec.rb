@@ -29,19 +29,19 @@ RSpec.describe Settings do
       stub_const("ARGV", [@path_to_file, 'filter.yaml'])
       @setting.load_application_settings
 
-      expect(@setting.google_details['client_account']).to eq 'fake account'
-      expect(@setting.google_details['client_secret']).to eq 'fake secret'
-      expect(@setting.google_details['user_email']).to eq 'random@email.com'
+      expect(@setting.google_client_settings.client_id).to eq 'fake account'
+      expect(@setting.google_client_settings.client_secret).to eq 'fake secret'
+      expect(@setting.google_client_settings.user_email).to eq 'random@email.com'
     end
 
     it 'loads mingle details from settings file' do
       stub_const("ARGV", [@path_to_file, 'filter.yaml'])
       @setting.load_application_settings
 
-      expect(@setting.mingle_details['username']).to eq 'anyusername'
-      expect(@setting.mingle_details['password']).to eq 'apassword!'
-      expect(@setting.mingle_details['url']).to eq 'URL to Mingle page'
-      expect(@setting.mingle_details['project_name']).to eq 'name_of_project'
+      expect(@setting.mingle_settings.username).to eq 'anyusername'
+      expect(@setting.mingle_settings.password).to eq 'apassword!'
+      expect(@setting.mingle_settings.url).to eq 'URL to Mingle page'
+      expect(@setting.mingle_settings.project_name).to eq 'name_of_project'
     end
   end
 

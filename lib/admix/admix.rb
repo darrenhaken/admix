@@ -22,12 +22,16 @@ class AdmixApp
 
   def start_from_settings
     settings = Settings.instance
-    settings.load_application_settings
 
-    create_manager_with(settings.google_details['client_account'], settings.google_details['client_secret'],
-                        settings.google_details['user_email'])
-    create_mingle_with(settings.mingle_details['username'], settings.mingle_details['password'],
-                      settings.mingle_details['url'], settings.mingle_details['project_name'], settings.filter_file)
+    begin
+      settings.load_application_settings
+    rescue AdmixSettingsError => e
+        print("Error: #{e.error_message}\n")
+        exit(-1)
+    end
+
+    create_manager_with(settings.google_client_settings)
+    create_mingle_with(settings.mingle_settings, settings.filter_file)
   end
 
   def print_statistics
@@ -72,14 +76,16 @@ class AdmixApp
     print("\nEnter path to mingle filter file \n=> ")
     mingle_filter_file_path = gets.chomp
 
-    create_mingle_with(mingle_username, mingle_password, mingle_url, mingle_project_name, mingle_filter_file_path)
+    mingle_settings = MingleSettings.new(mingle_username, mingle_password, mingle_url, mingle_project_name)
+    create_mingle_with(mingle_settings, mingle_filter_file_path)
   end
 
-  def create_mingle_with(mingle_username, mingle_password, mingle_url, mingle_project_name, filter_file_name)
-    @mingle_wrapper = MingleResourceLoader.new(mingle_username, mingle_password, mingle_url, RestClient)
+  def create_mingle_with(mingle_settings, filter_file_name)
+    @mingle_wrapper = MingleResourceLoader.new(mingle_settings.username, mingle_settings.password,
+                                               mingle_settings.url, RestClient)
     full_path_to_file = File.expand_path("../#{filter_file_name}", __FILE__)
     @mql_wrapper = MQLParser.new(full_path_to_file, 'name, type, status')
-    @mingle_wrapper.load_cards_for_project?(mingle_project_name, @mql_wrapper.parse)
+    @mingle_wrapper.load_cards_for_project?(mingle_settings.project_name, @mql_wrapper.parse)
     @mingle_wall = MingleWallSnapshot.new(@mingle_wrapper.resource)
   end
 
@@ -93,11 +99,11 @@ class AdmixApp
     print("\nEnter your email address (to access your google drive files)\n=> ")
     user_email = gets.chomp
 
-    create_manager_with(client_id, client_secret, user_email)
+    google_settings = GoogleClientSettings.new(client_id, client_secret, user_email)
+    create_manager_with(google_settings)
   end
 
-  def create_manager_with(client_id, client_secret, user_email)
-    google_settings = GoogleClientSettings.new(client_id, client_secret, user_email)
+  def create_manager_with(google_settings)
     @controller = GoogleController.new(google_settings, PATH_TO_FILE)
     @controller.setup_controller
 
