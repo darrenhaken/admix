@@ -16,13 +16,16 @@ class MingleWallSnapshot
     @cards = create_mingle_cards_from(xml_string)
   end
 
+  #TODO refactor the following two methods into one private method
   def number_of_cards_with_status(card_status)
+    return 0 if @cards.nil?
     return nil unless CARD_STATUS.include?(card_status)
     num_of_cards = @cards.select{ |c| c.status == card_status}
     num_of_cards.length
   end
 
   def number_of_cards_of_type(card_type)
+    return 0 if @cards.nil?
     return nil unless CARD_TYPES.include?(card_type)
     num_of_cards = @cards.select{|c| c.type == card_type}
     num_of_cards.length
@@ -32,7 +35,7 @@ class MingleWallSnapshot
 
   def create_mingle_cards_from(xml_string)
     cards_hash = Nori.new.parse(xml_string)
-    return nil if cards_hash.nil?
+    return nil if cards_hash.empty?
 
     @cards = []
     cards_hash['results'].each do |card|

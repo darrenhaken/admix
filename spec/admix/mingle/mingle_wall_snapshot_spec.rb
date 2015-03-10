@@ -19,6 +19,12 @@ RSpec.describe MingleWallSnapshot do
 
     it "creates MingleWallSnapshot and returns an array of MingleCard objects" do
       expect(@mingle_wall.cards.all? {|card| card.is_a? MingleCard}).to be true
+      end
+
+    it "creates MingleWallSnapshot with empty cards array if XML has no cards" do
+      @mingle_wall = MingleWallSnapshot.new('')
+
+      expect(@mingle_wall.cards).to be_nil
     end
 
     it "creates MingleWallSnapshot and returns an array of 7 MingleCard objects" do
@@ -34,6 +40,26 @@ RSpec.describe MingleWallSnapshot do
 
     it "return nill when given a Type that is not supported" do
       expect(@mingle_wall.number_of_cards_of_type('not supported type')).to be_nil
+    end
+
+    it "always returns 0 for number of cards for a given Type when cards array is empty" do
+      @mingle_wall = MingleWallSnapshot.new('')
+
+      expect(@mingle_wall.number_of_cards_of_type('Story')).to eq 0
+      expect(@mingle_wall.number_of_cards_of_type('Defect')).to eq 0
+      expect(@mingle_wall.number_of_cards_of_type('Power Ups')).to eq 0
+    end
+
+    it "always returns 0 for number of cards for a given Status when cards array is empty" do
+      @mingle_wall = MingleWallSnapshot.new('')
+
+      expect(@mingle_wall.number_of_cards_with_status('Next')).to eq 0
+      expect(@mingle_wall.number_of_cards_with_status('Dev')).to eq 0
+      expect(@mingle_wall.number_of_cards_with_status('Dev done')).to eq 0
+      expect(@mingle_wall.number_of_cards_with_status('A & D')).to eq 0
+      expect(@mingle_wall.number_of_cards_with_status('A & D done')).to eq 0
+      expect(@mingle_wall.number_of_cards_with_status('QA')).to eq 0
+      expect(@mingle_wall.number_of_cards_with_status('QA done')).to eq 0
     end
 
     it "returns 4 as number of cards of type Story" do
