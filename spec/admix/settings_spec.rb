@@ -42,6 +42,7 @@ RSpec.describe Settings do
       expect(@setting.mingle_settings.password).to eq 'apassword!'
       expect(@setting.mingle_settings.url).to eq 'URL to Mingle page'
       expect(@setting.mingle_settings.project_name).to eq 'name_of_project'
+      expect(@setting.mingle_settings.cfd_start_date).to eq '03/11/2014'
     end
   end
 

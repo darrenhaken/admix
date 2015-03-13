@@ -8,3 +8,4 @@ mingle_details:
  password: 'apassword!'
  url: 'URL to Mingle page'
  project_name: 'name_of_project'
+ cfd_start_date: '03/11/2014'

@@ -61,8 +61,8 @@ class Settings
   def create_mingle_settings
     mingle_details = @settings['mingle_details']
     check_keys(MingleSettings.SETTING_KEYS, mingle_details.keys)
-    @mingle_settings = MingleSettings.new(mingle_details['username'], mingle_details['password'],
-                                                 mingle_details['url'], mingle_details['project_name'])
+    @mingle_settings = MingleSettings.new(mingle_details['username'], mingle_details['password'], mingle_details['url'],
+                                          mingle_details['project_name'], mingle_details['cfd_start_date'])
   end
 
   def create_google_settings
