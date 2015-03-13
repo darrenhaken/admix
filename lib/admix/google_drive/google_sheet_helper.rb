@@ -2,16 +2,36 @@ require 'google_drive'
 
 class GoogleSheetHelper
 
-  def initialize(access_token)
+  @current_document
+
+  def initialize(access_token, spreadsheet_title, worksheet_title)
     @session = GoogleDrive.login_with_oauth(access_token)
+    @spreadsheet_title = spreadsheet_title
+    @worksheet_title = worksheet_title
   end
 
-  def list_all_files
-    @session.spreadsheets
+  def write_data_to_worksheet_with_mapping(mingle_statistics, column_mapping)
+    ws = get_worksheet
+    ws.synchronize()
+    the_last_empty_row = ws.num_rows() + 1
+    mingle_statistics.each do |k, v|
+      col = column_mapping[k]
+      ws[the_last_empty_row, col] = v
+    end
+    ws.synchronize()
   end
 
-  def get_sheet_with_title(title)
-    @session.spreadsheet_by_title title
+  def get_data_for_last_row_and_column(column_number)
+    ws = get_worksheet
+    the_last_empty_row = ws.num_rows()
+    ws[the_last_empty_row, column_number]
+  end
+
+  private
+  def get_worksheet
+    sp = @session.spreadsheet_by_title(@spreadsheet_title)
+    all_ws = sp.worksheets()
+    all_ws.select{|ws| ws.title == @worksheet_title}[0]
   end
 
 end
