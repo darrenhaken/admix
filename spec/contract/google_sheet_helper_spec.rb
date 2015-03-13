@@ -27,10 +27,12 @@ RSpec.describe GoogleSheetHelper do
     @client_id =  ENV['GOOGLE_CLIENT_ID']
     @client_secret = ENV['GOOGLE_CLIENT_SECRET']
     @user_email = ENV['GOOGLE_EMAIL']
+    @spreadsheet_title = ''
+    @worksheet_title = ''
 
     @file = generate_auth_file
 
-    settings = GoogleClientSettings.new(@client_id, @client_secret, @user_email)
+    settings = GoogleClientSettings.new(@client_id, @client_secret, @user_email, @spreadsheet_title, @worksheet_title)
     controller = GoogleController.new(settings, @file)
     controller.setup_controller
     @access_token = controller.access_token

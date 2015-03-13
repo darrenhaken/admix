@@ -19,7 +19,7 @@ describe GoogleController do
     allow_any_instance_of(GoogleController).to receive(:print)
     allow_any_instance_of(GoogleController).to receive(:gets).and_return("auth code")
 
-    google_settings = GoogleClientSettings.new('clinet_id', 'client_secret', 'user_email')
+    google_settings = GoogleClientSettings.new('clinet_id', 'client_secret', 'user_email','ss_title', 'ws_title')
     @controller = GoogleController.new(google_settings, @random_auth_file)
   end
 

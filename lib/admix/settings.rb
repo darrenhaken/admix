@@ -69,7 +69,8 @@ class Settings
     google_details = @settings['google_details']
     check_keys(GoogleClientSettings.SETTING_KEYS, google_details.keys)
     @google_client_settings = GoogleClientSettings.new(google_details['client_account'], google_details['client_secret'],
-                                                       google_details['user_email'])
+                                                       google_details['user_email'], google_details['spreadsheet_title'],
+                                                       google_details['worksheet_title'])
   end
 
   def check_keys(required_keys, keys)

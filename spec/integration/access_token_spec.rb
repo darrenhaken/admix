@@ -32,7 +32,7 @@ RSpec.describe AccessTokenManager do
   before(:each) do
     @client_auth = (Google::APIClient.new(:application_name=>'Admix', :application_version=>'1')).authorization
     @client_settings = GoogleClientSettings.new('google_client_id@googledev.com', 'notrealclientsecret124',
-                                                'randomemail@example.com')
+                                                'randomemail@example.com', 'title', 'ws_title')
     @store = AuthenticationStore.instance()
   end
 

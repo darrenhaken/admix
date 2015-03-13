@@ -32,6 +32,8 @@ RSpec.describe Settings do
       expect(@setting.google_client_settings.client_id).to eq 'fake account'
       expect(@setting.google_client_settings.client_secret).to eq 'fake secret'
       expect(@setting.google_client_settings.user_email).to eq 'random@email.com'
+      expect(@setting.google_client_settings.spreadsheet_title).to eq 'Admix'
+      expect(@setting.google_client_settings.worksheet_title).to eq 'CFD Test'
     end
 
     it 'loads mingle details from settings file' do
