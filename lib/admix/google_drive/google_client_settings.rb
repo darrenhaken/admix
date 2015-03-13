@@ -8,4 +8,7 @@ class GoogleClientSettings
     @user_email = user_email
   end
 
+  def self.SETTING_KEYS
+    ['client_account', 'client_secret', 'user_email']
+  end
 end

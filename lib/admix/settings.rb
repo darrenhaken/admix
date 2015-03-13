@@ -1,5 +1,3 @@
-# Source code to be found at http://speakmy.name/2011/05/29/simple-configuration-for-ruby-apps/
-
 require 'yaml'
 require 'singleton'
 
@@ -18,16 +16,12 @@ end
 
 class Settings
 
-  attr_reader :filter_file
-  attr_reader :google_client_settings, :mingle_settings
-
   include Singleton
 
+  attr_reader :google_client_settings, :mingle_settings
+  attr_reader :filter_file
+
   SETTINGS_KEYS = ['google_details', 'mingle_details']
-  REQUIRED_KEYS = {
-              :google_details => ['client_account', 'client_secret', 'user_email'],
-              :mingle_details => ['username', 'password', 'url', 'project_name']
-  }
 
   @settings = {}
 
@@ -58,7 +52,7 @@ class Settings
 
   def setup_settings
     if @settings.is_a?(Hash)
-      check_settings_keys(@settings.keys)
+      check_keys(SETTINGS_KEYS, @settings.keys)
       create_google_settings
       create_mingle_settings
     end
@@ -66,24 +60,16 @@ class Settings
 
   def create_mingle_settings
     mingle_details = @settings['mingle_details']
-    check_details_keys_for('mingle_details', mingle_details)
+    check_keys(MingleSettings.SETTING_KEYS, mingle_details.keys)
     @mingle_settings = MingleSettings.new(mingle_details['username'], mingle_details['password'],
                                                  mingle_details['url'], mingle_details['project_name'])
   end
 
   def create_google_settings
     google_details = @settings['google_details']
-    check_details_keys_for('google_details', google_details)
+    check_keys(GoogleClientSettings.SETTING_KEYS, google_details.keys)
     @google_client_settings = GoogleClientSettings.new(google_details['client_account'], google_details['client_secret'],
                                                        google_details['user_email'])
-  end
-
-  def check_details_keys_for(k, v)
-    check_keys( REQUIRED_KEYS[k.to_sym], v.keys)
-  end
-
-  def check_settings_keys(keys)
-    check_keys(SETTINGS_KEYS, keys)
   end
 
   def check_keys(required_keys, keys)
