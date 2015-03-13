@@ -8,13 +8,16 @@ class GoogleSheetColumnMapper
 
   def self.mapping
     @mapping = {
-        CardStatus.NEXT => '1',
-        CardStatus.DEV => '2',
-        CardStatus.DEV_DONE => '3',
-        CardStatus.QA => '3',
-        CardStatus.QA_DONE => '5',
-        CardStatus.AD => '6',
-        CardStatus.AD_DONE => '7'
+        :date => '1',
+        :day => '2',
+        CardStatus.LIVE => '3',
+        CardStatus.QA_DONE => '4',
+        CardStatus.QA => '5',
+        CardStatus.DEV_DONE => '6',
+        CardStatus.DEV => '7',
+        CardStatus.AD_DONE => '8',
+        CardStatus.AD => '9',
+        CardStatus.NEXT => '10'
     }
   end
 

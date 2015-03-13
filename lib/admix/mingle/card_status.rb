@@ -7,6 +7,11 @@ class CardStatus
   DEV_DONE = 'Dev done'
   AD = 'A & D'
   AD_DONE = 'A & D done'
+  LIVE = 'Done (Deployed to Live)'
+  
+  def self.LIVE
+    LIVE
+  end
 
   def self.NEXT
     NEXT
