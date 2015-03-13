@@ -4,6 +4,7 @@ require 'rest_client'
 require_relative '../../lib/admix/mingle/mingle_controller'
 require_relative '../../lib/admix/mingle/mingle_settings'
 require_relative '../../lib/admix/settings'
+require_relative '../../lib/admix/mingle/card_status'
 
 describe MingleController do
 
@@ -34,10 +35,10 @@ describe MingleController do
 
     result = @controller.get_cards_statistics
 
-    expect(result.delete('QA')).to eq _QA
-    expect(result.delete('Next')).to eq _Next
-    expect(result.delete('Dev')).to eq _Dev
-    expect(result.delete('Dev done')).to eq _Dev_done
+    expect(result.delete(CardStatus.QA)).to eq _QA
+    expect(result.delete(CardStatus.NEXT)).to eq _Next
+    expect(result.delete(CardStatus.NEXT)).to eq _Dev
+    expect(result.delete(CardStatus.DEV_DONE)).to eq _Dev_done
     result.each do |k, v|
       expect(v).to eq 0
     end
