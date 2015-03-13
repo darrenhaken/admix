@@ -9,7 +9,7 @@ RSpec.describe MingleResourceLoader do
     @username = 'fakeusernmae'
     @password = 'fakepassword'
     @mingle_url = 'tw-digital.mingle.thoughtworks.com'
-    @path_to_assets = "../../../assets/"
+    @path_to_assets = "../../../assets/xml/"
     @wrapper = MingleResourceLoader.new(@username, @password, @mingle_url, RestClient)
   end
 
@@ -48,7 +48,7 @@ RSpec.describe MingleResourceLoader do
     it 'returns true when getting cards and the returned status code is 200' do
       allow(@rest_client).to receive(:get) {make_response(:code => 200)}
 
-      get_result = @wrapper.load_cards_for_project?('project', @mql)
+      get_result = @wrapper.get?('project', @mql)
 
       expect(get_result).to be true
     end
@@ -56,7 +56,7 @@ RSpec.describe MingleResourceLoader do
     it 'returns false when getting cards and the returned status code not in range 2XX'do
       allow(@rest_client).to receive(:get) {make_response(:code => 400)}
 
-      get_result = @wrapper.load_cards_for_project?('project', @mql)
+      get_result = @wrapper.get?('project', @mql)
 
       expect(get_result).to be false
     end
@@ -64,7 +64,7 @@ RSpec.describe MingleResourceLoader do
     it "throws MingleAPIAuthorisationError when status code is 401 " do
       allow(@rest_client).to receive(:get) {make_response(:code => 401)}
 
-      expect {@wrapper.load_cards_for_project?('project', @mql)}.to raise_error(MingleAuthenticationError)
+      expect {@wrapper.get?('project', @mql)}.to raise_error(MingleAuthenticationError)
     end
 
     it 'returns XML data from "resource" which contains all project cards if status code is 200' do
@@ -72,7 +72,7 @@ RSpec.describe MingleResourceLoader do
       response_body = File.read(xml_file)
       allow(@rest_client).to receive(:get) {make_response(:code => 200, :body => response_body)}
 
-      @wrapper.load_cards_for_project?('project', @mql)
+      @wrapper.get?('project', @mql)
 
       expect(@wrapper.resource).to be response_body
     end
@@ -80,7 +80,7 @@ RSpec.describe MingleResourceLoader do
     it "calls get with the project_url and sets 'mql' parameter from mql filter" do
       allow(@rest_client).to receive(:get) {make_response(:code => 200)}
 
-      @wrapper.load_cards_for_project?('project', @mql)
+      @wrapper.get?('project', @mql)
 
       expect(@rest_client).to have_received(:get).with(@project_url, @params).once
     end

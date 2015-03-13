@@ -32,7 +32,7 @@ class MingleController
     mql = mql_parser.parse
 
     begin
-      load_result = @mingle_loader.load_cards_for_project?(@mingle_settings.project_name, mql)
+      load_result = @mingle_loader.get?(@mingle_settings.project_name, mql)
       return nil unless load_result
     rescue MingleAuthenticationError => e
       raise MingleControllerError.new(e.message)

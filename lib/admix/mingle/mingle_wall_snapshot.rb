@@ -10,10 +10,11 @@ class MingleWallSnapshot
                  'New Customer Request', 'Ready for Development', 'Ready For Next', 'Blocked on external dependencies',
                  'Waster', 'Waste']
 
-  attr_reader :cards
+  attr_reader :cards, :number_of_live_cards
 
-  def initialize(xml_string)
-    @cards = create_mingle_cards_from(xml_string)
+  def initialize(xml_cards_data, xml_live_card_counts)
+    @cards = parse_xml(xml_cards_data, true)
+    @number_of_live_cards = parse_xml(xml_live_card_counts, false)
   end
 
   #TODO refactor the following two methods into one private method
@@ -33,15 +34,20 @@ class MingleWallSnapshot
 
   private
 
-  def create_mingle_cards_from(xml_string)
+  def parse_xml(xml_string, parse_cards)
     cards_hash = Nori.new.parse(xml_string)
     return nil if cards_hash.empty?
 
-    @cards = []
-    cards_hash['results'].each do |card|
-      @cards << MingleCard.new(card['name'], card['status'], card['type'])
+    if(parse_cards)
+      @cards = []
+      cards_hash['results'].each do |card|
+        @cards << MingleCard.new(card['name'], card['status'], card['type'])
+      end
+      @cards
+    else
+      result = cards_hash['results'][0]
+      result['count'].to_i
     end
-    @cards
   end
 
 end

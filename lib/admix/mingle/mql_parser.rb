@@ -26,6 +26,12 @@ class MQLParser
     end
   end
 
+  def statement_for_count_since(date)
+    filters = yaml_filters
+    mql_for_types = get_types(filters)
+    "SELECT COUNT(*) WHERE 'Moved to production date' > '#{date}'  AND (#{mql_for_types})"
+  end
+
   private
 
   def yaml_filters
