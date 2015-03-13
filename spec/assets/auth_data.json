@@ -1,7 +1,7 @@
 {
-  "access_token": "access_token",
-  "refresh_token": "refresh_token",
+  "access_token": null,
+  "refresh_token": "a refresh token to use for the request",
   "expires_in": 3600,
-  "expires_at": "expires_at",
-  "user_email": "user_email"
+  "expires_at": "2015-02-15 09:23:22 +0000",
+  "user_email": "../../assets/"
 }

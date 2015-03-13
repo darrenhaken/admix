@@ -37,7 +37,7 @@ describe MingleController do
 
     expect(result.delete(CardStatus.QA)).to eq _QA
     expect(result.delete(CardStatus.NEXT)).to eq _Next
-    expect(result.delete(CardStatus.NEXT)).to eq _Dev
+    expect(result.delete(CardStatus.DEV)).to eq _Dev
     expect(result.delete(CardStatus.DEV_DONE)).to eq _Dev_done
     result.each do |k, v|
       expect(v).to eq 0

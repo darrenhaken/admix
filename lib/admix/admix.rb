@@ -12,12 +12,7 @@ class AdmixApp
 
   PATH_TO_FILE = File.expand_path('../../assets/auth_details.json',__FILE__)
 
-  def start_from_cml
-    perform_google_auth
-    setup_mingle
-  end
-
-  def start_from_settings
+  def start_app
     settings = Settings.instance
 
     begin
