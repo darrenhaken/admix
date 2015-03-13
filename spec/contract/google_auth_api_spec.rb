@@ -4,9 +4,9 @@ require 'json'
 describe 'Contract Test for Google::APIClient' do
 
   before(:all) do
-    @client_id = # find a way to get it from ENV
-    @client_secret = # find a way to get it from ENV
-    @user_email = # find a way to get it from ENV
+    @client_id = ENV['GOOGLE_CLIENT_ID']
+    @client_secret = ENV['GOOGLE_CLIENT_SECRET']
+    @user_email = ENV['GOOGLE_EMAIL']
     @path_to_assets = "../../assets/"
     @auth_json_file = File.expand_path(@path_to_assets + 'auth_data.json', __FILE__)
   end
@@ -24,6 +24,10 @@ describe 'Contract Test for Google::APIClient' do
     end
   end
 
+
+  after(:all) do
+    File.delete(@auth_json_file)
+  end
 
   describe "Return an access token" do
 
