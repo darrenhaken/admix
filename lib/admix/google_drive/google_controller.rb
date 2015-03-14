@@ -14,7 +14,6 @@ class GoogleController
   def initialize(google_settings, auth_file)
     @settings = google_settings
     @auth_file = auth_file
-    @mapper = GoogleSheetColumnMapper.new
   end
 
   def setup_controller
@@ -25,9 +24,10 @@ class GoogleController
   end
 
   def insert_cfd_to_spreadsheet(cdf)
-    @spreadsheet_helper = GoogleSheetHelper.new(check_access_token, @settings.spreadsheet_title, @settings.worksheet_title)
-    @spreadsheet_helper.update_cfd_for_day_date_column!(cdf, @mapper.mapping)
-    @spreadsheet_helper.write_data_to_worksheet_with_mapping(cdf, @mapper.mapping)
+    check_access_token
+    @spreadsheet_helper = GoogleSheetHelper.new(@access_token, @settings.spreadsheet_title, @settings.worksheet_title)
+    @spreadsheet_helper.update_cfd_for_day_date_column!(cdf, GoogleSheetColumnMapper.mapping)
+    @spreadsheet_helper.write_data_to_worksheet_with_mapping(cdf, GoogleSheetColumnMapper.mapping)
   end
 
   private

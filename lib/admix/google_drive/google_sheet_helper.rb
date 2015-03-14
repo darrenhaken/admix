@@ -14,7 +14,7 @@ class GoogleSheetHelper
     ws = get_worksheet
     ws.synchronize()
     cfd.update('date' => Time.now.strftime("%m/%d/%Y"))
-    cfd.update('day' => ws[ws.num_rows(), mapping['day']].to_i + 1)
+    cfd.update('day' => ws[ws.num_rows(), mapping['day'].to_i].to_i + 1)
   end
 
   def write_data_to_worksheet_with_mapping(mingle_statistics, column_mapping)
@@ -22,7 +22,7 @@ class GoogleSheetHelper
     ws.synchronize()
     the_last_empty_row = ws.num_rows() + 1
     mingle_statistics.each do |k, v|
-      col = column_mapping[k]
+      col = column_mapping[k].to_i
       ws[the_last_empty_row, col] = v
     end
     ws.synchronize()

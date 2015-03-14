@@ -1,7 +1,12 @@
 filters:
   - Status:
-    - '> NEXT BAU'
-    - '< Done (Deployed to Live)'
+    - '= Next'
+    - '= QA'
+    - '= QA done'
+    - '= Dev'
+    - '= Dev done'
+    - '= A & D'
+    - '= A & D done'
   - Type:
     - Power Ups
     - Story

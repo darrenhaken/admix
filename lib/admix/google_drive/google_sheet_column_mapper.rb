@@ -1,4 +1,4 @@
-require_relative '../admix/mingle/card_status'
+require_relative '../../../lib/admix/mingle/card_status'
 
 class GoogleSheetColumnMapper
 
@@ -8,8 +8,8 @@ class GoogleSheetColumnMapper
 
   def self.mapping
     @mapping = {
-        :date => '1',
-        :day => '2',
+        'date' => '1',
+        'day' => '2',
         CardStatus.LIVE => '3',
         CardStatus.QA_DONE => '4',
         CardStatus.QA => '5',

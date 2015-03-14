@@ -1,0 +1,13 @@
+google_details:
+  client_account: 
+  client_secret: 
+  user_email: admixmingle@gmail.com
+  spreadsheet_title: 'Admix'
+  worksheet_title: 'CDF Test'
+
+mingle_details:
+  username:
+  password: 
+  url: 'tw-digital.mingle.thoughtworks.com'
+  project_name: 'tw_dot_com'
+  cfd_start_date: '03/11/2014'
