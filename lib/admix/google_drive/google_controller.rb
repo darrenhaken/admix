@@ -2,6 +2,8 @@ require 'google/api_client'
 
 require_relative '../../../lib/admix/google_drive/authentication_store'
 require_relative '../../../lib/admix/google_drive/access_token_manager'
+require_relative '../../../lib/admix/google_drive/google_sheet_helper'
+require_relative '../../../lib/admix/google_drive/google_sheet_column_mapper'
 
 class GoogleController
 
@@ -12,6 +14,7 @@ class GoogleController
   def initialize(google_settings, auth_file)
     @settings = google_settings
     @auth_file = auth_file
+    @mapper = GoogleSheetColumnMapper.new
   end
 
   def setup_controller
@@ -19,6 +22,12 @@ class GoogleController
     client = Google::APIClient.new(:application_name => 'Admix', :application_version => 0.1).authorization
     @token_manager = AccessTokenManager.new(client, @settings, store_manager, @auth_file)
     check_access_token
+  end
+
+  def insert_cfd_to_spreadsheet(cdf)
+    @spreadsheet_helper = GoogleSheetHelper.new(check_access_token, @settings.spreadsheet_title, @settings.worksheet_title)
+    @spreadsheet_helper.update_cfd_for_day_date_column!(cdf, @mapper.mapping)
+    @spreadsheet_helper.write_data_to_worksheet_with_mapping(cdf, @mapper.mapping)
   end
 
   private
