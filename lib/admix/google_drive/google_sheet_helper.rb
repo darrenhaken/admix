@@ -10,6 +10,13 @@ class GoogleSheetHelper
     @worksheet_title = worksheet_title
   end
 
+  def update_cfd_for_day_date_column!(cfd, mapping)
+    ws = get_worksheet
+    ws.synchronize()
+    cfd.update('date' => Time.now.strftime("%m/%d/%Y"))
+    cfd.update('day' => ws[ws.num_rows(), mapping['day']].to_i + 1)
+  end
+
   def write_data_to_worksheet_with_mapping(mingle_statistics, column_mapping)
     ws = get_worksheet
     ws.synchronize()

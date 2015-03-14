@@ -63,4 +63,25 @@ RSpec.describe GoogleSheetHelper do
     expect(@spreadsheet_helper.get_data_for_last_row_and_column(3)). to eq data[:c]
   end
 
+  it 'Writes an input to a google sheet using the given mapping' do
+    @spreadsheet_helper = GoogleSheetHelper.new(@access_token, 'Admix', 'CDF Test')
+    data = {
+        :a  => 'This is a',
+        :b => 'This is b',
+        :c => 'This is c'
+    }
+    mapping = {
+        'date' => 1,
+        'day' => 2,
+        :a => 3,
+        :b => 4,
+        :c => 5,
+    }
+
+    @spreadsheet_helper.update_cfd_for_day_date_column!(data, mapping)
+
+    expect(data['date']). to eq Time.now.strftime("%m/%d/%Y")
+    expect(data['day']). to eq @spreadsheet_helper.get_data_for_last_row_and_column(2).to_i + 1
+  end
+
 end
