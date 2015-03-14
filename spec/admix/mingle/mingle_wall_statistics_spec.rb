@@ -2,6 +2,7 @@ require 'rspec'
 
 require_relative '../../../lib/admix/mingle/mingle_wall_snapshot'
 require_relative '../../../lib/admix/mingle/mingle_wall_statistics'
+require_relative '../../../lib/admix/mingle/card_status'
 
 describe MingleWallStatistics do
 
@@ -9,6 +10,7 @@ describe MingleWallStatistics do
     @mingle_wall = instance_double(MingleWallSnapshot)
     @mingle_statistics = MingleWallStatistics.new(@mingle_wall)
     allow(@mingle_wall).to receive(:number_of_cards_with_status){0}
+    allow(@mingle_wall).to receive(:number_of_live_cards){0}
   end
 
   it 'returns a Hash containing Mingle wall statistics' do
@@ -18,7 +20,7 @@ describe MingleWallStatistics do
   end
 
   it "returns Hash which contains the following keys needed for Commultive Flow Digram" do
-    keys = ['QA', 'QA done', 'Dev done', 'Dev', 'A & D done', 'A & D', 'Next']
+    keys = ['QA', 'QA done', 'Dev done', 'Dev', 'A & D done', 'A & D', 'Next', 'Done (Deployed to Live)']
 
     result = @mingle_statistics.statistics_for_cfd
 
@@ -47,15 +49,17 @@ describe MingleWallStatistics do
     _AD_done = 1
     allow(@mingle_wall).to receive(:number_of_cards_with_status).with('A & D done'){_AD_done}
 
-
+    _LIVE = 10
+    allow(@mingle_wall).to receive(:number_of_live_cards){10}
     result = @mingle_statistics.statistics_for_cfd
 
-    expect(result['QA']).to eq _QA
-    expect(result['QA done']).to eq _QA_done
-    expect(result['Dev']).to eq _Dev
-    expect(result['Dev done']).to eq _Dev_done
-    expect(result['Next']).to eq _Next
-    expect(result['A & D']).to eq _AD
-    expect(result['A & D done']).to eq _AD_done
+    expect(result[CardStatus.QA]).to eq _QA
+    expect(result[CardStatus.QA_DONE]).to eq _QA_done
+    expect(result[CardStatus.DEV]).to eq _Dev
+    expect(result[CardStatus.DEV_DONE]).to eq _Dev_done
+    expect(result[CardStatus.NEXT]).to eq _Next
+    expect(result[CardStatus.AD]).to eq _AD
+    expect(result[CardStatus.AD_DONE]).to eq _AD_done
+    expect(result[CardStatus.LIVE]).to eq _LIVE
   end
 end

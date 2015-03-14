@@ -29,17 +29,27 @@ class MingleController
 
   def get_cards_statistics
     mql_parser = MQLParser.new(@filter_file, SELECT_ELEMENT)
-    mql = mql_parser.parse
 
+    cards_mql = mql_parser.parse
+    send_request(cards_mql)
+    cards = @mingle_loader.resource
+    return nil unless cards
+
+    count_mql = mql_parser.statement_for_count_since(@mingle_settings.cfd_start_date)
+    send_request(count_mql)
+    count = @mingle_loader.resource
+
+    mingle_wall = MingleWallSnapshot.new(cards, count)
+    mingle_statistics = MingleWallStatistics.new(mingle_wall)
+    mingle_statistics.statistics_for_cfd
+  end
+
+  private
+  def send_request(mql)
     begin
-      load_result = @mingle_loader.get?(@mingle_settings.project_name, mql)
-      return nil unless load_result
+      @mingle_loader.get?(@mingle_settings.project_name, mql)
     rescue MingleAuthenticationError => e
       raise MingleControllerError.new(e.message)
     end
-
-    mingle_wall = MingleWallSnapshot.new(@mingle_loader.resource)
-    mingle_statistics = MingleWallStatistics.new(mingle_wall)
-    mingle_statistics.statistics_for_cfd
   end
 end

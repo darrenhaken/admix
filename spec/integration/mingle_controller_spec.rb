@@ -9,8 +9,20 @@ require_relative '../../lib/admix/mingle/card_status'
 describe MingleController do
 
   def mock_rest_client(body)
-    response = instance_double(RestClient::Response, :code => 200, :body => body)
-    allow(RestClient).to receive(:get).and_return(response)
+    response1 = instance_double(RestClient::Response, :code => 200, :body => body)
+
+    number_of_card_response = File.expand_path('../../assets/xml/number_of_card_response.xml', __FILE__)
+    response2 = instance_double(RestClient::Response, :code => 200, :body => File.read(number_of_card_response))
+
+    allow(RestClient).to receive(:get).with(anything, anything) do |arg1, arg2|
+      mql = arg2[:params]
+      mql = mql[:mql]
+      if mql.include?('SELECT COUNT(*) WHERE')
+        response2
+      else
+        response1
+      end
+    end
   end
 
   before(:each) do
@@ -32,6 +44,7 @@ describe MingleController do
     _QA = 1
     _Dev = 1
     _Dev_done = 2
+    _LIVE = 83
 
     result = @controller.get_cards_statistics
 
@@ -39,6 +52,7 @@ describe MingleController do
     expect(result.delete(CardStatus.NEXT)).to eq _Next
     expect(result.delete(CardStatus.DEV)).to eq _Dev
     expect(result.delete(CardStatus.DEV_DONE)).to eq _Dev_done
+    expect(result.delete(CardStatus.LIVE)).to eq _LIVE
     result.each do |k, v|
       expect(v).to eq 0
     end
@@ -47,9 +61,14 @@ describe MingleController do
   it 'returns 0s for card statistics if no cards is returned by RestClient' do
     mock_rest_client ''
     result = @controller.get_cards_statistics
+    _LIVE = 83
 
     result.each do |k, v|
-      expect(v).to eq 0
+      if k == CardStatus.LIVE
+        expect(v).to eq _LIVE
+      else
+        expect(v).to eq 0
+        end
     end
   end
 
