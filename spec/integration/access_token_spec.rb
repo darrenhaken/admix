@@ -21,7 +21,8 @@ RSpec.describe AccessTokenManager do
         'access_token' => 'a refreshed access token',
         'expires_in' => 3600,
     }
-    @expected_file_content = @generated_token_response.update('user_email'=>'randomemail@example.com')
+    @expected_file_content = @generated_token_response
+    @expected_file_content = @expected_file_content.update('user_email'=>'randomemail@example.com')
   end
 
   after(:all) do
@@ -45,8 +46,10 @@ RSpec.describe AccessTokenManager do
 
   describe 'Authentication credentials are stored/loaded in/from a json file' do
 
-    def assert_file_content(file1, expected)
-      expect(file1['refresh_token']).to eq expected['refresh_token']
+    def assert_file_content(file1, expected, assert_refresh_token=true)
+      if assert_refresh_token
+        expect(file1['refresh_token']).to eq expected['refresh_token']
+      end
       expect(file1['access_token']).to eq expected['access_token']
       expect(file1['expires_at']).to eq expected['expires_at']
       expect(file1['expired_in']).to eq expected['expired_in']

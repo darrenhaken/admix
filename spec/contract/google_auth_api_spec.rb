@@ -1,7 +1,12 @@
 require 'rspec'
 require 'json'
+require 'google/api_client'
 
-describe 'Contract Test for Google::APIClient' do
+require_relative '../../spec/admix/spec_helper'
+require_relative '../../lib/admix/google_drive/access_token_manager'
+require_relative '../../lib/admix/google_drive/authentication_store'
+
+RSpec.describe 'Contract Test for Google::APIClient' do
 
   before(:all) do
     @client_id = ENV['GOOGLE_CLIENT_ID']
@@ -32,14 +37,22 @@ describe 'Contract Test for Google::APIClient' do
   describe "Return an access token" do
 
     #TODO find a way to grant access to a client, and generate authorization code for test
+    # This involves logging in with the username, accept app access, then forward the authorization code
     it "Generated a new refresh token and access token when given authorisation code" do
 
     end
 
-    #TODO this needs a constant refresh token to use for refresing an access token for an account
     it "generates a new access token and returns it when current token has expired" do
-      create_file(@auth_json_file, nil, 'a refresh token to use for the request', "2015-02-15 09:23:22 +0000")
-    end
-  end
+      create_file(@auth_json_file, nil, ENV['GOOGLE_REFRESH_TOKEN'], "2015-02-15 09:23:22 +0000")
+      settings = double("GoogleSetting", :client_id => @client_id, :client_secret => @client_secret, :user_email => @user_email)
+      store_manager = AuthenticationStore.instance
+      client = Google::APIClient.new(:application_name => 'Admix', :application_version => 0.1).authorization
+      manager = AccessTokenManager.new(client, settings, store_manager, @auth_json_file)
 
+      access_token = manager.get_access_token
+
+      expect(access_token).to_not be_nil
+    end
+
+  end
 end
