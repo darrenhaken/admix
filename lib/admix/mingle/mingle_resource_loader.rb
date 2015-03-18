@@ -26,15 +26,17 @@ class MingleResourceLoader
 
   def get?(project_name, filter_by_mql)
     cards_url = full_rest_resource(project_name)
-    response = @rest_client.get(cards_url, {:params => {:mql=>filter_by_mql}})
 
-    if response.code == 200
-      @resource = response.body
-      return true
-    elsif response.code == 401
+    begin
+      response = @rest_client.get(cards_url, {:params => {:mql=>filter_by_mql}})
+      if response.code == 200
+        @resource = response.body
+        return true
+      end
+      false
+    rescue RestClient::Unauthorized => e
       raise MingleAuthenticationError.new("Authentication fails wrong username/password")
     end
-    false
   end
 
   def full_rest_resource(project_name)

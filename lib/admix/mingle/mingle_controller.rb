@@ -49,7 +49,8 @@ class MingleController
     begin
       @mingle_loader.get?(@mingle_settings.project_name, mql)
     rescue MingleAuthenticationError => e
-      raise MingleControllerError.new(e.message)
+      print("\nIncorrect username/password. Please Update the admix setting file\n")
+      exit(-1)
     end
   end
 end

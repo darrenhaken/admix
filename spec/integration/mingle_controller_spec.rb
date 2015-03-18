@@ -14,8 +14,8 @@ describe MingleController do
     number_of_card_response = File.expand_path('../../assets/xml/number_of_card_response.xml', __FILE__)
     response2 = instance_double(RestClient::Response, :code => 200, :body => File.read(number_of_card_response))
 
-    allow(RestClient).to receive(:get).with(anything, anything) do |arg1, arg2|
-      mql = arg2[:params]
+    allow(RestClient).to receive(:get).with(anything, anything) do |_, params|
+      mql = params[:params]
       mql = mql[:mql]
       if mql.include?('SELECT COUNT(*) WHERE')
         response2
@@ -59,7 +59,7 @@ describe MingleController do
   end
 
   it 'returns 0s for card statistics if no cards is returned by RestClient' do
-    mock_rest_client ''
+    mock_rest_client('')
     result = @controller.get_cards_statistics
     _LIVE = 83
 
@@ -72,18 +72,19 @@ describe MingleController do
     end
   end
 
-  it 'raises MingleControllerError when MingleResourceLoader raises MingleAuthenticationError' do
-    response = instance_double(RestClient::Response, :code => 401, :body => nil)
-    allow(RestClient).to receive(:get).and_return(response)
-
-    expect{@controller.get_cards_statistics}.to raise_error(MingleControllerError)
-  end
-
   it 'returns nil when MingleResourceLoader fails to load resources' do
     response = instance_double(RestClient::Response, :code => 400, :body => nil)
     allow(RestClient).to receive(:get).and_return(response)
 
     expect(@controller.get_cards_statistics).to be_nil
+  end
+
+  it "shows an user-friendly error message, and exits when MingleAuthenticationError is raised" do
+    allow_any_instance_of(MingleResourceLoader).to receive(:get?).and_raise(MingleAuthenticationError, "error")
+
+    expect(@controller).to receive(:print).with("\nIncorrect username/password. Please Update the admix setting file\n")
+
+    expect{@controller.get_cards_statistics}.to raise_error(SystemExit)
   end
 
   #TODO if MQL filter cannot be parsed ?

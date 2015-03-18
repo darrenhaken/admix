@@ -62,7 +62,7 @@ RSpec.describe MingleResourceLoader do
     end
 
     it "throws MingleAPIAuthorisationError when status code is 401 " do
-      allow(@rest_client).to receive(:get) {make_response(:code => 401)}
+      allow(@rest_client).to receive(:get).and_raise(RestClient::Unauthorized, "Unauthorized Access")
 
       expect {@wrapper.get?('project', @mql)}.to raise_error(MingleAuthenticationError)
     end
