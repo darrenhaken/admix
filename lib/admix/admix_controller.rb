@@ -6,10 +6,6 @@ require_relative '../../lib/admix/mingle/mingle_settings'
 
 class AdmixController
 
-  def initialize()
-
-  end
-
   PATH_TO_FILE = File.expand_path('../../assets/auth_details.json',__FILE__)
 
   def start_app
@@ -24,13 +20,6 @@ class AdmixController
 
     create_google_controller(settings.google_client_settings)
     create_mingle_controller(settings.mingle_settings, settings.filter_file)
-  end
-
-  def print_statistics
-    result = @mingle_controller.get_cards_statistics
-    result.each do |k, v|
-      print("\nNumber of cards in #{k} is #{v}")
-    end
   end
 
   def sync_data
