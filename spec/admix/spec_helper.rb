@@ -1,6 +1,7 @@
 require 'rspec'
 
 # These variables needs to be set for some tests to pass [The current variables are fake and won't make the test pass]
+# To generate ENV['GOOGLE_REFRESH_TOKEN'] use the authorization_url_presenter.rb under script dir
 ENV['GOOGLE_EMAIL'] = 'admixmingle@gmail.com'
 ENV['GOOGLE_REFRESH_TOKEN'] = '1/RLcvXpydxAQCe_xjklDtrJoaneNnokf8av_J9SQ24pN90RDknAdJa_sgfheVM0XT'
 ENV['GOOGLE_CLIENT_SECRET'] = 'oSAoSvc0dxg4H-VTI3OBXLyV'

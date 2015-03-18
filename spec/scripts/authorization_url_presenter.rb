@@ -1,10 +1,12 @@
+#This script helps generating a refresh token to use in ENV['GOOGLE_REFRESH_TOKEN']
+
 require 'json'
 
 require_relative '../../lib/admix/google_drive/google_controller'
 require_relative '../../lib/admix/google_drive/google_client_settings'
 require_relative '../../spec/admix/spec_helper'
 
-google_settings = GoogleClientSettings.new(ENV['GOOGLE_CLIENT_ID'], ENV['GOOGLE_CLIENT_SECRET'], ENV['GOOGLE_EMAIL'])
+google_settings = GoogleClientSettings.new(ENV['GOOGLE_CLIENT_ID'], ENV['GOOGLE_CLIENT_SECRET'], ENV['GOOGLE_EMAIL'], 'sheet', 'worksheet')
 do_not_change_me_file = File.expand_path('../../assets/DO_NOT_OPEN_OR_CHANGE_ME.json',__FILE__)
 
 File.delete(do_not_change_me_file)
