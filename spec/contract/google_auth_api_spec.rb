@@ -2,7 +2,7 @@ require 'rspec'
 require 'json'
 require 'google/api_client'
 
-require_relative '../../spec/admix/spec_helper'
+require_relative '../../spec/spec_helper'
 require_relative '../../lib/admix/google_drive/access_token_manager'
 require_relative '../../lib/admix/google_drive/authentication_store'
 

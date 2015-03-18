@@ -1,7 +1,7 @@
 require 'rspec'
 require 'google_drive'
 
-require_relative '../admix/spec_helper'
+require_relative '../spec_helper'
 require_relative '../../lib/admix/google_drive/google_sheet_helper'
 require_relative '../../lib/admix/google_drive/google_controller'
 require_relative '../../lib/admix/google_drive/google_client_settings'

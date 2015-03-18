@@ -6,7 +6,7 @@ require_relative '../../lib/admix/mingle/mingle_settings'
 require_relative '../../lib/admix/settings'
 require_relative '../../lib/admix/mingle/card_status'
 
-describe MingleController do
+RSpec.describe MingleController do
 
   def mock_rest_client(body)
     response1 = instance_double(RestClient::Response, :code => 200, :body => body)

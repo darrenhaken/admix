@@ -3,7 +3,7 @@ require_relative '../../lib/admix/google_drive/google_controller'
 require_relative '../../lib/admix/google_drive/google_client_settings'
 require_relative '../../lib/admix/google_drive/access_token_manager'
 
-describe GoogleController do
+RSpec.describe GoogleController do
 
   before(:all) do
     @random_auth_file = File.expand_path('../../assets/random_auth.json',__FILE__)

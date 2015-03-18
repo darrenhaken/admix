@@ -4,12 +4,14 @@ require 'json'
 
 require_relative '../../lib/admix/google_drive/google_controller'
 require_relative '../../lib/admix/google_drive/google_client_settings'
-require_relative '../../spec/admix/spec_helper'
+require_relative '../../spec/spec_helper'
 
 google_settings = GoogleClientSettings.new(ENV['GOOGLE_CLIENT_ID'], ENV['GOOGLE_CLIENT_SECRET'], ENV['GOOGLE_EMAIL'], 'sheet', 'worksheet')
 do_not_change_me_file = File.expand_path('../../assets/DO_NOT_OPEN_OR_CHANGE_ME.json',__FILE__)
 
-File.delete(do_not_change_me_file)
+if File.exists?(do_not_change_me_file)
+  File.delete(do_not_change_me_file)
+end
 
 controller = GoogleController.new(google_settings, do_not_change_me_file)
 controller.setup_controller

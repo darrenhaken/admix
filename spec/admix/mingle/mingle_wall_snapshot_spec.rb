@@ -1,6 +1,5 @@
 require 'rspec'
 
-require_relative '../../../spec/admix/spec_helper'
 require_relative '../../../lib/admix/mingle/mingle_wall_snapshot'
 require_relative '../../../lib/admix/mingle/mingle_card'
 

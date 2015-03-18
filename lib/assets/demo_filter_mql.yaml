@@ -1,8 +1,0 @@
-filters:
-  - Status:
-    - '> NEXT BAU'
-    - '< Done (Deployed to Live)'
-  - Type:
-    - Power Ups
-    - Story
-    - Defect
