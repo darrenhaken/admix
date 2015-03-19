@@ -49,7 +49,7 @@ class MingleController
     begin
       @mingle_loader.get?(@mingle_settings.project_name, mql)
     rescue MingleAuthenticationError => e
-      print("\nIncorrect username/password. Please Update the admix setting file\n")
+      print("\nIncorrect Mingle username/password. Please Update the mingle settings in admix setting file\n")
       exit(-1)
     end
   end

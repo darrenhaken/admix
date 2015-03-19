@@ -82,7 +82,7 @@ RSpec.describe MingleController do
   it "shows an user-friendly error message, and exits when MingleAuthenticationError is raised" do
     allow_any_instance_of(MingleResourceLoader).to receive(:get?).and_raise(MingleAuthenticationError, "error")
 
-    expect(@controller).to receive(:print).with("\nIncorrect username/password. Please Update the admix setting file\n")
+    expect(@controller).to receive(:print).with("\nIncorrect Mingle username/password. Please Update the mingle settings in admix setting file\n")
 
     expect{@controller.get_cards_statistics}.to raise_error(SystemExit)
   end
