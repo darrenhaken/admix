@@ -5,6 +5,13 @@ require_relative '../../lib/admix/google_drive/access_token_manager'
 
 RSpec.describe GoogleController do
 
+  def rescue_exception(&block)
+    begin
+      yield block
+    rescue Exception
+    end
+  end
+
   before(:all) do
     @random_auth_file = File.expand_path('../../assets/random_auth.json',__FILE__)
   end
@@ -24,14 +31,14 @@ RSpec.describe GoogleController do
   end
 
   it 'Prints the authorisation uri when the access token is nil' do
-    @controller.setup_controller
+    rescue_exception {@controller.setup_controller}
 
     expect(@controller).to have_received(:print).with("> Copy this URL to your browser to grant access to the application: \n")
     expect(@controller).to have_received(:print).with("\nThis should be authorization URI\n")
   end
 
   it 'prompts the user for authorization code when access token is nil' do
-    @controller.setup_controller
+    rescue_exception {@controller.setup_controller}
 
     expect(@controller).to have_received(:print).with("> Paste authorisation code here: \n")
   end
@@ -60,12 +67,25 @@ RSpec.describe GoogleController do
     @controller.setup_controller
   end
 
-  it 'prompts the user when AccessTokenAuthorizationError is raised' do
+  it 'Asks user to re-enter authorization code 3 times, then exist when AccessTokenAuthorizationError is raised' do
     allow_any_instance_of(AccessTokenManager).to receive(:request_new_token).and_raise(AccessTokenAuthorisationError.new(''))
 
-    @controller.setup_controller
-
+    expect{@controller.setup_controller}.to raise_error(SystemExit)
     expect(@controller).to have_received(:print).with("\n> Authorisation fails Try again: \n").exactly(3).times
+  end
+
+  it 'shows friendly error message and exist the app when when AccessTokenClientError is raised when requesting new token' do
+    allow_any_instance_of(AccessTokenManager).to receive(:request_new_token).and_raise(AccessTokenClientError.new('invalid_client'))
+
+    expect{@controller.setup_controller}.to raise_error(SystemExit)
+    expect(@controller).to have_received(:print).with("\ninvalid_client\n")
+  end
+
+  it 'shows friendly error message and exist the app when when AccessTokenClientError is raised when refreshing token' do
+    allow_any_instance_of(AccessTokenManager).to receive(:get_access_token).and_raise(AccessTokenClientError.new('invalid_client'))
+
+    expect{@controller.setup_controller}.to raise_error(SystemExit)
+    expect(@controller).to have_received(:print).with("\ninvalid_client\n")
   end
 
 end

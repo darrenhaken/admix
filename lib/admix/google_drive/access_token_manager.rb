@@ -10,6 +10,16 @@ class AccessTokenAuthorisationError < StandardError
 
 end
 
+class AccessTokenClientError < StandardError
+
+  attr_reader :message
+
+  def initialize(message)
+    @message = message
+  end
+
+end
+
 class AccessTokenManager
 
   CLIENT_SCOPE = 'https://www.googleapis.com/auth/drive'
@@ -23,30 +33,20 @@ class AccessTokenManager
   def get_access_token()
     token_hash = @store_manager.load_stored_credentials(@auth_file)
     unless token_hash.nil?
-      if username_eq_user_email(token_hash[:user_email])
-        if not is_token_expired?(token_hash[:expires_at])
-          return token_hash[:access_token]
-        else
+      if @auth.username == token_hash[:user_email]
+        if is_token_expired?(token_hash[:expires_at])
           return refresh_access_token(token_hash[:refresh_token])
+        else
+          return token_hash[:access_token]
         end
       end
     end
   end
 
   def request_new_token(authorization_code)
-    begin
       @auth.grant_type = nil
       @auth.code = authorization_code
-      token_hash = @auth.fetch_access_token
-      @auth.expires_in = token_hash['expires_in']
-      @auth.expires_at = Time.now + token_hash['expires_in']
-      @auth.access_token = token_hash['access_token']
-      @auth.refresh_token = token_hash['refresh_token']
-      @store_manager.save_credentials_in_file(@auth, @auth_file)
-      @access_token = token_hash['access_token']
-    rescue Signet::AuthorizationError
-      raise AccessTokenAuthorisationError.new("Wrong authorization code")
-    end
+      send_authorization_request
   end
 
   def authorization_uri
@@ -55,19 +55,33 @@ class AccessTokenManager
 
   private
 
-  def username_eq_user_email(user_email)
-    @auth.username == user_email
-  end
-
   def refresh_access_token(refresh_token)
     @auth.grant_type = 'refresh_token'
     @auth.refresh_token = refresh_token
-    token_hash = @auth.fetch_access_token
+    send_authorization_request
+  end
+
+  def update_authorization_client(token_hash)
     @auth.expires_in = token_hash['expires_in']
     @auth.expires_at = Time.now + token_hash['expires_in']
     @auth.access_token = token_hash['access_token']
-    @store_manager.save_credentials_in_file(@auth, @auth_file)
-    @access_token = token_hash['access_token']
+    if token_hash.has_key?('refresh_token')
+      @auth.refresh_token = token_hash['refresh_token']
+    end
+  end
+
+  def send_authorization_request
+    begin
+      token_hash = @auth.fetch_access_token
+      update_authorization_client(token_hash)
+      @store_manager.save_credentials_in_file(@auth, @auth_file)
+      @access_token = token_hash['access_token']
+    rescue Signet::AuthorizationError => e
+      if e.message.include?("invalid_client")
+        raise AccessTokenClientError.new("Incorrect Google Client ID/Secret")
+      end
+      raise AccessTokenAuthorisationError.new("Authorization Error: \n#{e.message}")
+    end
   end
 
   def is_token_expired?(date)

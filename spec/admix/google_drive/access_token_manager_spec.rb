@@ -32,7 +32,6 @@ RSpec.describe AccessTokenManager do
   def stub_store_manager
     @store = double("AuthenticationStore")
     allow(@store).to receive(:save_credentials_in_file).with(anything, anything)
-
   end
 
   describe "Initialise  AccessTokenManager" do
@@ -146,12 +145,33 @@ RSpec.describe AccessTokenManager do
       expect(@store).to have_received(:save_credentials_in_file).with(@auth_client, anything)
     end
 
-    it 'stores the token details after it is received' do
+    it 'Raises AccessTokenAuthorisationError when fails to request new token, and server code is 401' do
       allow(@auth_client).to receive(:code=).with('authorization code')
       allow(@auth_client).to receive(:fetch_access_token).and_raise(Signet::AuthorizationError.new(anything))
 
       expect{@manager.request_new_token('authorization code')}.to raise_error(AccessTokenAuthorisationError)
+      end
+
+    it 'Raises AccessTokenAuthorisationError when fails to refresh token, and server code is 401' do
+      @token_hash = {:access_token => 'access token in stored in a file',
+                     :refresh_token => 'refresh token',
+                     :expires_at => (Time.now - 3600).to_s,
+                     :user_email => 'anything'}
+      allow(@store).to receive(:load_stored_credentials){@token_hash}
+      allow(@auth_client).to receive(:fetch_access_token).and_raise(Signet::AuthorizationError.new(anything))
+
+      expect{@manager.get_access_token}.to raise_error(AccessTokenAuthorisationError)
     end
 
+    it 'Raises AccessTokenClientError when client is not recognised by the server' do
+      @token_hash = {:access_token => 'access token in stored in a file',
+                     :refresh_token => 'refresh token',
+                     :expires_at => (Time.now - 3600).to_s,
+                     :user_email => 'anything'}
+      allow(@store).to receive(:load_stored_credentials){@token_hash}
+      allow(@auth_client).to receive(:fetch_access_token).and_raise(Signet::AuthorizationError.new('"error" : "invalid_client"'))
+
+      expect{@manager.get_access_token}.to raise_error(AccessTokenClientError)
+    end
   end
 end

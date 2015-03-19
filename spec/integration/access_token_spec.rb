@@ -101,7 +101,7 @@ RSpec.describe AccessTokenManager do
     it "sets grant_type to 'refresh_token', and refresh_token for file value for requesting new token" do
       generate_auth_file_with_time(Time.now - 3600)
       @manager = AccessTokenManager.new(@client_auth, @client_settings, @store, @existing_auth_file)
-      allow(@client_auth).to receive(:fetch_access_token){@generated_token_response}
+      allow(@client_auth).to receive(:fetch_access_token){@refresh_token_response}
 
       expect(@client_auth).to receive(:grant_type=).with('refresh_token')
       expect(@client_auth).to receive(:refresh_token=).with(@expected_file_content['refresh_token'])
