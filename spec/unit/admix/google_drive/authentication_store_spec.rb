@@ -1,13 +1,13 @@
 require 'rspec'
 require 'json'
 
-require_relative '../../../lib/admix/google_drive/authentication_store'
+require_relative '../../../../lib/admix/google_drive/authentication_store'
 
 RSpec.describe AuthenticationStore do
 
   before(:all) do
     @store = AuthenticationStore.instance
-    @path_to_assets = "../../../assets/"
+    @path_to_assets = "../../../../assets/"
     @auth_json_file = File.expand_path(@path_to_assets + 'auth_data.json', __FILE__)
     @token_hash = {:access_token => 'access_token',
                    :refresh_token => 'refresh_token',

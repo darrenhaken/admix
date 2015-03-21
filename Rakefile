@@ -31,7 +31,7 @@ namespace 'unit' do
   end
 
   RSpec::Core::RakeTask.new(:all) do |t|
-    t.pattern = Dir.glob('spec/admix/**/*_spec.rb')
+    t.pattern = Dir.glob('spec/unit/**/*_spec.rb')
     t.rspec_opts = '--format documentation'
   end
 

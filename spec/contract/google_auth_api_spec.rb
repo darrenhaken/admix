@@ -12,7 +12,7 @@ RSpec.describe 'Contract Test for Google::APIClient' do
     @client_id = ENV['GOOGLE_CLIENT_ID']
     @client_secret = ENV['GOOGLE_CLIENT_SECRET']
     @user_email = ENV['GOOGLE_EMAIL']
-    @path_to_assets = "../../assets/"
+    @path_to_assets = "../../../assets/"
     @auth_json_file = File.expand_path(@path_to_assets + 'auth_data.json', __FILE__)
   end
 

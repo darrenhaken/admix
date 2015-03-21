@@ -1,7 +1,7 @@
 require 'rspec'
 require 'rest_client'
 
-require_relative '../../../lib/admix/mingle/mingle_resource_loader'
+require_relative '../../../../lib/admix/mingle/mingle_resource_loader'
 
 RSpec.describe MingleResourceLoader do
 
@@ -9,7 +9,7 @@ RSpec.describe MingleResourceLoader do
     @username = 'fakeusernmae'
     @password = 'fakepassword'
     @mingle_url = 'tw-digital.mingle.thoughtworks.com'
-    @path_to_assets = "../../../assets/xml/"
+    @path_to_assets = "../../../../assets/xml/"
     @wrapper = MingleResourceLoader.new(@username, @password, @mingle_url, RestClient)
   end
 

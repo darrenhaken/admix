@@ -1,12 +1,12 @@
 require 'rspec'
 
-require_relative '../../../lib/admix/mingle/mingle_wall_snapshot'
-require_relative '../../../lib/admix/mingle/mingle_card'
+require_relative '../../../../lib/admix/mingle/mingle_wall_snapshot'
+require_relative '../../../../lib/admix/mingle/mingle_card'
 
 RSpec.describe MingleWallSnapshot do
 
   before(:all) do
-    @xml_path = File.expand_path('../../../assets/xml/',__FILE__)
+    @xml_path = File.expand_path('../../../../assets/xml/',__FILE__)
     @xml_file = @xml_path + '/mingle_wall_snapshot_with_five_cards.xml'
     @xml_string = File.read(@xml_file)
 

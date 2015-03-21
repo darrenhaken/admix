@@ -1,11 +1,11 @@
 require 'rspec'
 
-require_relative '../../../lib/admix/mingle/mql_parser'
+require_relative '../../../../lib/admix/mingle/mql_parser'
 
 RSpec.describe MQLParser do
 
   before(:all) do
-    @yaml_assets_path = "../../../assets/yaml/"
+    @yaml_assets_path = "../../../../assets/yaml/"
     @select_element = "COUNT(*)"
   end
 

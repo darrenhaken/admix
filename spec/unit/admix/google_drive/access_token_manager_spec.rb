@@ -1,7 +1,7 @@
 require 'rspec'
 require 'google/api_client'
 
-require_relative '../../../lib/admix/google_drive/access_token_manager'
+require_relative '../../../../lib/admix/google_drive/access_token_manager'
 
 RSpec.describe AccessTokenManager do
 

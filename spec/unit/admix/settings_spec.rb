@@ -1,11 +1,11 @@
 require 'rspec'
 
-require_relative '../../lib/admix/settings'
+require_relative '../../../lib/admix/settings'
 
 RSpec.describe Settings do
 
   before(:all) do
-    @path_to_file = File.expand_path('../../assets/yaml/admix_settings.yaml', __FILE__)
+    @path_to_file = File.expand_path('../../../assets/yaml/admix_settings.yaml', __FILE__)
     @setting = Settings.instance
   end
 

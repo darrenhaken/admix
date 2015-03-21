@@ -1,8 +1,8 @@
 require 'rspec'
 
-require_relative '../../../lib/admix/mingle/mingle_wall_snapshot'
-require_relative '../../../lib/admix/mingle/mingle_wall_statistics'
-require_relative '../../../lib/admix/mingle/card_status'
+require_relative '../../../../lib/admix/mingle/mingle_wall_snapshot'
+require_relative '../../../../lib/admix/mingle/mingle_wall_statistics'
+require_relative '../../../../lib/admix/mingle/card_status'
 
 describe MingleWallStatistics do
 
