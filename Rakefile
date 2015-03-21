@@ -14,35 +14,17 @@ task :env_check do
   end
 end
 
-namespace 'unit' do
-  RSpec::Core::RakeTask.new(:mingle)  do |t|
-    t.pattern = Dir.glob('spec/admix/mingle/*_spec.rb')
+namespace :spec do
+  RSpec::Core::RakeTask.new(:unit) do |t|
+    t.pattern = Dir['spec/unit/*/**/*_spec.rb']
     t.rspec_opts = '--format documentation'
   end
 
-  RSpec::Core::RakeTask.new(:google_drive)  do |t|
-    t.pattern = Dir.glob('spec/admix/google_drive/*_spec.rb')
+  RSpec::Core::RakeTask.new(:integration) do |t|
+    t.pattern = Dir['spec/integration/*/**/*_spec.rb']
     t.rspec_opts = '--format documentation'
   end
-
-  RSpec::Core::RakeTask.new(:settings) do |t|
-    t.pattern = Dir.glob('spec/admix/*_spec.rb')
-    t.rspec_opts = '--format documentation'
-  end
-
-  RSpec::Core::RakeTask.new(:all) do |t|
-    t.pattern = Dir.glob('spec/unit/**/*_spec.rb')
-    t.rspec_opts = '--format documentation'
-  end
-
 end
-
-namespace 'integration' do
-  RSpec::Core::RakeTask.new(:all)  do |t|
-    t.pattern = Dir.glob('spec/integration/**/*_spec.rb')
-    t.rspec_opts = '--format documentation'
-  end
-  end
 
 namespace 'contract' do
   RSpec::Core::RakeTask.new(:all => :env_check)  do |t|
@@ -56,11 +38,4 @@ RSpec::Core::RakeTask.new(:spec => :env_check) do |t|
   t.rspec_opts = '--format documentation'
 end
 
-
-task :unit_mingle => 'unit:mingle'
-task :unit_google_drive => 'unit:google_drive'
-task :unit_settings => 'unit:settings'
-task :unit_test => 'unit:all'
-
-task :integration_test => 'integration:all'
 task :contract_test => 'contract:all'
