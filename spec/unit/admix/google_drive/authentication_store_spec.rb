@@ -7,7 +7,7 @@ RSpec.describe AuthenticationStore do
 
   before(:all) do
     @store = AuthenticationStore.instance
-    @path_to_assets = "../../../../assets/"
+    @path_to_assets = '../../../../assets/'
     @auth_json_file = File.expand_path(@path_to_assets + 'auth_data.json', __FILE__)
     @token_hash = {:access_token => 'access_token',
                    :refresh_token => 'refresh_token',
@@ -85,7 +85,7 @@ RSpec.describe AuthenticationStore do
     @store.save_credentials_in_file(auth_credentials, @auth_json_file)
     json_data  = JSON.parse(File.read(@auth_json_file))
     stored_data = Hash[json_data.map{|(k,v)| [k.to_sym,v]}]
-    
+
     expect(stored_data).to eq @token_hash
   end
 end

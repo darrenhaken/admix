@@ -1,8 +1,7 @@
-require_relative 'spec/spec_helper'
-
-require "bundler/gem_tasks"
+require 'bundler/gem_tasks'
 require 'rake'
 require 'rspec/core/rake_task'
+require_relative 'spec/spec_helper'
 
 task :env_check do
   env_keys = %w(GOOGLE_EMAIL GOOGLE_REFRESH_TOKEN GOOGLE_CLIENT_SECRET GOOGLE_CLIENT_ID)

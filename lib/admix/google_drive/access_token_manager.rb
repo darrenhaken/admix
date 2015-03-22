@@ -1,24 +1,6 @@
 require 'time'
-
-class AccessTokenAuthorisationError < StandardError
-
-  attr_reader :message
-
-  def initialize(message)
-    @message = message
-  end
-
-end
-
-class AccessTokenClientError < StandardError
-
-  attr_reader :message
-
-  def initialize(message)
-    @message = message
-  end
-
-end
+require_relative 'access_token_authorisation_error'
+require_relative 'access_token_client_error'
 
 class AccessTokenManager
 
@@ -30,8 +12,9 @@ class AccessTokenManager
     @auth_file = auth_file
   end
 
-  def get_access_token()
+  def get_access_token
     token_hash = @store_manager.load_stored_credentials(@auth_file)
+
     unless token_hash.nil?
       if @auth.username == token_hash[:user_email]
         if is_token_expired?(token_hash[:expires_at])
@@ -44,9 +27,9 @@ class AccessTokenManager
   end
 
   def request_new_token(authorization_code)
-      @auth.grant_type = nil
-      @auth.code = authorization_code
-      send_authorization_request
+    @auth.grant_type = nil
+    @auth.code = authorization_code
+    send_authorization_request
   end
 
   def authorization_uri
