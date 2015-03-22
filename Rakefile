@@ -24,18 +24,9 @@ namespace :spec do
     t.pattern = Dir['spec/integration/*/**/*_spec.rb']
     t.verbose = false
   end
-end
 
-namespace 'contract' do
-  RSpec::Core::RakeTask.new(:all => :env_check) do |t|
+  RSpec::Core::RakeTask.new(:contract => :env_check) do |t|
     t.pattern = Dir.glob('spec/contract/**/*_spec.rb')
     t.verbose = false
   end
 end
-
-RSpec::Core::RakeTask.new(:spec => :env_check) do |t|
-  t.pattern = Dir.glob('spec/**/*_spec.rb')
-  t.verbose = false
-end
-
-task :contract_test => 'contract:all'
