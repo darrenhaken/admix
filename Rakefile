@@ -5,8 +5,8 @@ require 'rake'
 require 'rspec/core/rake_task'
 
 task :env_check do
-  env_keys = ['GOOGLE_EMAIL', 'GOOGLE_REFRESH_TOKEN', 'GOOGLE_CLIENT_SECRET', 'GOOGLE_CLIENT_ID']
-  env_keys.each do | key|
+  env_keys = %w(GOOGLE_EMAIL GOOGLE_REFRESH_TOKEN GOOGLE_CLIENT_SECRET GOOGLE_CLIENT_ID)
+  env_keys.each do |key|
     if not ENV.has_key?(key) or ENV[key].nil?
       puts "Set the ENV value for '#{key}' in spec/spec_helper.rb"
       exit(-1)
@@ -17,25 +17,25 @@ end
 namespace :spec do
   RSpec::Core::RakeTask.new(:unit) do |t|
     t.pattern = Dir['spec/unit/*/**/*_spec.rb']
-    t.rspec_opts = '--format documentation'
+    t.verbose = false
   end
 
   RSpec::Core::RakeTask.new(:integration) do |t|
     t.pattern = Dir['spec/integration/*/**/*_spec.rb']
-    t.rspec_opts = '--format documentation'
+    t.verbose = false
   end
 end
 
 namespace 'contract' do
-  RSpec::Core::RakeTask.new(:all => :env_check)  do |t|
+  RSpec::Core::RakeTask.new(:all => :env_check) do |t|
     t.pattern = Dir.glob('spec/contract/**/*_spec.rb')
-    t.rspec_opts = '--format documentation'
+    t.verbose = false
   end
 end
 
 RSpec::Core::RakeTask.new(:spec => :env_check) do |t|
   t.pattern = Dir.glob('spec/**/*_spec.rb')
-  t.rspec_opts = '--format documentation'
+  t.verbose = false
 end
 
 task :contract_test => 'contract:all'
