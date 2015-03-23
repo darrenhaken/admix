@@ -37,7 +37,7 @@ RSpec.describe AccessTokenManager do
     allow(@store).to receive(:save_credentials_in_file).with(anything, anything)
   end
 
-  describe "Initialise  AccessTokenManager" do
+  describe "Initialise AccessTokenManager" do
 
     before(:each) do
       stub_authentication_client
@@ -61,6 +61,7 @@ RSpec.describe AccessTokenManager do
       @manager = AccessTokenManager.new(@auth_client, @settings ,@store, anything)
       @token_hash = {:access_token => 'access token in stored in a file',
                      :refresh_token => 'refresh token',
+                     :expires_in => 3600,
                      :expires_at => (Time.now + 3600).to_s,
                      :user_email => 'anything'}
       @fetched_token = { 'access_token' => 'new fresh token generated',
@@ -105,7 +106,7 @@ RSpec.describe AccessTokenManager do
       allow(@auth_client).to receive(:username=).with('username_from_settings')
       allow(@auth_client).to receive(:username){'username_from_settings'}
 
-      allow(@store).to receive(:load_stored_credentials){{:user_email => 'user email from file'}}
+      allow(@store).to receive(:load_stored_credentials){{:user_email => 'user email from file'}.merge(@token_hash)}
 
       expect(@manager.get_access_token).to be_nil
     end
