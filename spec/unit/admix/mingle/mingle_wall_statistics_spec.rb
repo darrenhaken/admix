@@ -4,7 +4,7 @@ require_relative '../../../../lib/admix/mingle/mingle_wall_snapshot'
 require_relative '../../../../lib/admix/mingle/mingle_wall_statistics'
 require_relative '../../../../lib/admix/mingle/card_status'
 
-describe MingleWallStatistics do
+RSpec.describe MingleWallStatistics do
 
   before(:each) do
     @mingle_wall = instance_double(MingleWallSnapshot)

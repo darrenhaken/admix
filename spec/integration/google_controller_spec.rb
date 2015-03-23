@@ -17,7 +17,7 @@ RSpec.describe GoogleController do
   end
 
   after(:all) do
-    File.delete(@random_auth_file)
+    File.delete(@random_auth_file) if File.exists?(@random_auth_file)
   end
 
   before(:each) do

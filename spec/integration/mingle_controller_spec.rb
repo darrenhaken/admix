@@ -26,7 +26,7 @@ RSpec.describe MingleController do
   end
 
   before(:each) do
-    body = File.expand_path('../../../assets/xml/mingle_wall_snapshot_with_five_cards.xml', __FILE__)
+    body = File.expand_path('../../assets/xml/mingle_wall_snapshot_with_five_cards.xml', __FILE__)
     mock_rest_client File.read(body)
     mingle_settings = MingleSettings.new('user', 'password', 'url', 'project_name', 'start_date')
     @filter_file = File.expand_path('../../assets/yaml/filter_for_single_typ_and_status.yaml', __FILE__)
