@@ -57,14 +57,15 @@ class AccessTokenManager
     begin
       token_hash = @auth.fetch_access_token
       update_authorization_client(token_hash)
-      @store_manager.save_credentials_in_file(@auth, @auth_file)
       @access_token = token_hash['access_token']
+      @store_manager.save_credentials_in_file(access_token_to_json, @auth_file)
     rescue Signet::AuthorizationError => e
       if e.message.include?("invalid_client")
         raise AccessTokenClientError.new("Incorrect Google Client ID/Secret")
       end
       raise AccessTokenAuthorisationError.new("Authorization Error: \n#{e.message}")
     end
+    @access_token
   end
 
   def is_token_expired?(date)
@@ -79,4 +80,15 @@ class AccessTokenManager
     @auth.client_secret = client_settings.client_secret
     @auth.username = client_settings.user_email
   end
+
+  def access_token_to_json
+    {
+        :access_token => @access_token,
+        :refresh_token => @auth.refresh_token,
+        :expires_at => @auth.expires_at,
+        :expires_in => @auth.expires_in,
+        :user_email => @auth.username
+    }
+  end
+
 end

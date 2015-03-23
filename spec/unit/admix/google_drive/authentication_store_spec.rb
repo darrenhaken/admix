@@ -17,16 +17,6 @@ RSpec.describe AuthenticationStore do
     }
   end
 
-  def mock_auth_credentials
-    auth_credentials = double("Signet::OAuth2::Client")
-    allow(auth_credentials).to receive(:access_token){@token_hash[:access_token]}
-    allow(auth_credentials).to receive(:refresh_token){@token_hash[:refresh_token]}
-    allow(auth_credentials).to receive(:expires_in){@token_hash[:expires_in]}
-    allow(auth_credentials).to receive(:expires_at){@token_hash[:expires_at]}
-    allow(auth_credentials).to receive(:username){@token_hash[:user_email]}
-    auth_credentials
-  end
-
   def create_file(file)
     File.open(file, 'w+') do |f|
       f.write(JSON.pretty_generate(@token_hash))
@@ -67,22 +57,20 @@ RSpec.describe AuthenticationStore do
     expect(result).to be_nil
   end
 
-  it 'stores authorization credentials in a file and return true' do
-    auth_credentials = mock_auth_credentials
+  it 'writes a given Hash in a file and return true' do
     File.open(@auth_json_file, 'w+'){
       #delete file content
     }
 
-    result = @store.save_credentials_in_file(auth_credentials, @auth_json_file)
+    result = @store.save_credentials_in_file(@token_hash, @auth_json_file)
 
     expect(result).to be true
   end
 
-  it 'writes the authorization credentials in file in a JSON format' do
+  it 'writes a given Hash that contains the authorization credentials in file in a JSON format' do
     File.open(@auth_json_file, 'w+'){}
-    auth_credentials = mock_auth_credentials
 
-    @store.save_credentials_in_file(auth_credentials, @auth_json_file)
+    @store.save_credentials_in_file(@token_hash, @auth_json_file)
     json_data  = JSON.parse(File.read(@auth_json_file))
     stored_data = Hash[json_data.map{|(k,v)| [k.to_sym,v]}]
 

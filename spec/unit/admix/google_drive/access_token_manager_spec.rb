@@ -15,10 +15,13 @@ RSpec.describe AccessTokenManager do
     allow(@auth_client).to receive(:username=)
     allow(@auth_client).to receive(:username){'anything'}
     allow(@auth_client).to receive(:expires_at=)
+    allow(@auth_client).to receive(:expires_at)
     allow(@auth_client).to receive(:expires_in=)
+    allow(@auth_client).to receive(:expires_in)
     allow(@auth_client).to receive(:access_token=)
     allow(@auth_client).to receive(:access_token)
     allow(@auth_client).to receive(:refresh_token=)
+    allow(@auth_client).to receive(:refresh_token)
     allow(@auth_client).to receive(:fetch_access_token)
   end
 
@@ -83,12 +86,11 @@ RSpec.describe AccessTokenManager do
     it "calls store manager to store the new refresh token when it is received" do
       @token_hash = @token_hash.update(:expires_at => (Time.now - 3600).to_s)
       allow(@store).to receive(:load_stored_credentials){@token_hash}
-
       allow(@auth_client).to receive(:fetch_access_token) {@fetched_token}
 
       @manager.get_access_token
 
-      expect(@store).to have_received(:save_credentials_in_file).with(@auth_client, anything)
+      expect(@store).to have_received(:save_credentials_in_file)
     end
 
     it "Return nil when file is not found by AuthenticationStore" do
@@ -135,14 +137,11 @@ RSpec.describe AccessTokenManager do
     it 'stores the token details after it is received' do
       allow(@auth_client).to receive(:grant_type=).with(nil)
       allow(@auth_client).to receive(:code=).with('authorization code')
-      allow(@auth_client).to receive(:expires_in=).with(@fetched_token['expired_in'])
-      allow(@auth_client).to receive(:access_token=).with(@fetched_token['access_token'])
-      allow(@auth_client).to receive(:refresh_token=).with(@fetched_token['refresh_token'])
       allow(@auth_client).to receive(:fetch_access_token).and_return(@fetched_token)
 
       @manager.request_new_token('authorization code')
 
-      expect(@store).to have_received(:save_credentials_in_file).with(@auth_client, anything)
+      expect(@store).to have_received(:save_credentials_in_file)
     end
 
     it 'Raises AccessTokenAuthorisationError when fails to request new token, and server code is 401' do
