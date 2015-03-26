@@ -1,4 +1,4 @@
-require_relative '../../lib/admix/settings'
+require_relative '../../lib/admix/utils/settings'
 require_relative '../../lib/admix/google_drive/google_controller'
 require_relative '../../lib/admix/google_drive/google_client_settings'
 require_relative '../../lib/admix/mingle/mingle_controller'
@@ -29,8 +29,7 @@ class AdmixController
 
   private
   def create_mingle_controller(mingle_settings, filter_file_name)
-    full_path_to_file = File.expand_path("../#{filter_file_name}", __FILE__)
-    @mingle_controller = MingleController.new(mingle_settings, full_path_to_file)
+    @mingle_controller = MingleController.new(mingle_settings, filter_file_name)
   end
 
   def create_google_controller(google_settings)

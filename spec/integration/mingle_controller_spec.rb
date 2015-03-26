@@ -3,7 +3,7 @@ require 'rest_client'
 
 require_relative '../../lib/admix/mingle/mingle_controller'
 require_relative '../../lib/admix/mingle/mingle_settings'
-require_relative '../../lib/admix/settings'
+require_relative '../../lib/admix/utils/settings'
 require_relative '../../lib/admix/mingle/card_status'
 
 RSpec.describe MingleController do

@@ -1,4 +1,4 @@
-require_relative '../../../lib/admix/settings'
+require_relative '../utils/settings'
 
 class GoogleClientSettings
 
