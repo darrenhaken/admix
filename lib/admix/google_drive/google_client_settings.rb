@@ -19,6 +19,21 @@ class GoogleClientSettings
                              google_details['worksheet_title'])
   end
 
+  def ==(other)
+    self.class == other.class &&
+        self.client_id == other.client_id &&
+        self.client_secret == other.client_secret &&
+        self.user_email == other.user_email &&
+        self.spreadsheet_title == other.spreadsheet_title &&
+        self.worksheet_title == other.worksheet_title
+  end
+
+  alias :eql? :==
+
+  def hash
+    [@client_id, @client_secret, @user_email, @spreadsheet_title, @worksheet_title].hash
+  end
+
   private
 
   def self.SETTING_KEYS

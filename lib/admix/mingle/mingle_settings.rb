@@ -18,6 +18,21 @@ class MingleSettings
                        mingle_details['project_name'], mingle_details['cfd_start_date'])
   end
 
+  def ==(other)
+    self.class == other.class &&
+        self.username == other.username &&
+        self.password == other.password &&
+        self.url == other.url &&
+        self.project_name == other.project_name &&
+        self.cfd_start_date== other.cfd_start_date
+  end
+
+  alias :eql? :==
+
+  def hash
+    [@username, @password, @url, @project_name, @cfd_start_date].hash
+  end
+
   private
 
   def self.SETTING_KEYS
