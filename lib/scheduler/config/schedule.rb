@@ -22,7 +22,7 @@
 require_relative '../scheduler_logger'
 require_relative '../../../lib/scheduler/admix_scheduler'
 
-every :day, :at => '18:00' do
+every :weekday, :at => '18:00' do
   command_to_execute = AdmixScheduler.scheduler_command
   log_output = AdmixScheduler.scheduler_log
 
