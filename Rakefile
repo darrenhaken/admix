@@ -28,4 +28,12 @@ namespace :spec do
     t.pattern = Dir.glob('spec/contract/**/*_spec.rb')
     t.verbose = false
   end
+
+  RSpec::Core::RakeTask.new(:all => :env_check) do |t|
+    t.pattern = Dir.glob('spec/*/**/*_spec.rb')
+    t.verbose = false
+    t.rspec_opts = '--format documentation'
+  end
 end
+
+task :spec => 'spec:all'
