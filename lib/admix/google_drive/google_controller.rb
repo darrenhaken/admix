@@ -2,6 +2,7 @@ require 'google/api_client'
 
 require_relative '../../../lib/admix/google_drive/authentication_store'
 require_relative '../../../lib/admix/google_drive/access_token_manager'
+require_relative '../../../lib/admix/google_drive/google_drive_o_auth2_client'
 require_relative '../../../lib/admix/google_drive/google_sheet_helper'
 require_relative '../../../lib/admix/google_drive/google_sheet_column_mapper'
 
@@ -18,8 +19,9 @@ class GoogleController
 
   def setup_controller
     store_manager = AuthenticationStore.instance
-    client = Google::APIClient.new(:application_name => 'Admix', :application_version => 0.1).authorization
-    @token_manager = AccessTokenManager.new(client, @settings, store_manager, @auth_file)
+    google_client = Google::APIClient.new(:application_name => 'Admix', :application_version => 0.1).authorization
+    @oauth2_client = GoogleDriveOAuth2Client.new(google_client, @settings)
+    @token_manager = AccessTokenManager.new(@oauth2_client, store_manager, @auth_file)
     check_access_token
   end
 

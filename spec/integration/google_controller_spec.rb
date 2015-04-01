@@ -3,14 +3,14 @@ require_relative '../../lib/admix/google_drive/google_controller'
 require_relative '../../lib/admix/google_drive/google_client_settings'
 require_relative '../../lib/admix/google_drive/access_token_manager'
 
-RSpec.describe GoogleController do
-
-  def rescue_exception(&block)
-    begin
-      yield block
-    rescue Exception
-    end
+def rescue_exception(&block)
+  begin
+    yield block
+  rescue Exception
   end
+end
+
+RSpec.describe GoogleController do
 
   before(:all) do
     @random_auth_file = File.expand_path('../../assets/random_auth.json',__FILE__)
@@ -44,22 +44,18 @@ RSpec.describe GoogleController do
   end
 
   it 'takes user input as an authorisation code' do
-    allow_any_instance_of(AccessTokenManager).to receive(:request_new_token).and_return('any access token')
-
-    @controller.setup_controller
+    rescue_exception{@controller.setup_controller}
 
     expect(@controller).to have_received(:gets).exactly(1)
   end
 
   it 'passes the authorisation code to the AccessToken' do
-    allow_any_instance_of(AccessTokenManager).to receive(:request_new_token).and_return('any access token')
-
     expect_any_instance_of(AccessTokenManager).to receive(:request_new_token).with("auth code")
 
     @controller.setup_controller
   end
 
-  it 'does not prompts user for authorization code when access code is returned' do
+  it 'does not prompts user for authorization code when access token is returned' do
     allow_any_instance_of(AccessTokenManager).to receive(:get_access_token).and_return('an access token')
 
     expect(@controller).to receive(:gets).never

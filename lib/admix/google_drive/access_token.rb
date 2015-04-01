@@ -5,7 +5,7 @@ class AccessToken
   attr_reader :token, :refresh_token, :user_email
 
   def initialize(token_hash)
-    token_hash = Hash[token_hash.map{ |k, v| [k.to_sym, v] }]
+    token_hash = make_hash_keys_symbolic(token_hash)
     @token = token_hash[:access_token]
     @expires_in = token_hash[:expires_in]
     @expires_at = token_hash[:expires_at]? token_hash[:expires_at]:(Time.now + @expires_in).to_s
@@ -13,7 +13,15 @@ class AccessToken
     @user_email = token_hash[:user_email]
   end
 
-  def has_token_expires?
+  def set_user_email(user_email)
+    @user_email = user_email
+  end
+
+  def set_refresh_token(refresh_token)
+    @refresh_token = refresh_token
+  end
+
+  def has_token_expired?
     Time.now > Time.parse(@expires_at)
   end
 
@@ -26,4 +34,10 @@ class AccessToken
         :user_email => @user_email
     }
   end
+
+  private
+  def make_hash_keys_symbolic(token_hash)
+    Hash[token_hash.map { |k, v| [k.to_sym, v] }]
+  end
+
 end

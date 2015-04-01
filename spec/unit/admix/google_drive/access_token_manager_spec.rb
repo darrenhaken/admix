@@ -2,176 +2,85 @@ require 'rspec'
 require 'google/api_client'
 
 require_relative '../../../../lib/admix/google_drive/access_token_manager'
+require_relative '../../../../lib/admix/google_drive/authentication_store'
 
 RSpec.describe AccessTokenManager do
 
-  def stub_authentication_client
-    @auth_client = double("Google::APIClient.client_authorisation")
-    allow(@auth_client).to receive(:grant_type=)
-    allow(@auth_client).to receive(:scope=)
-    allow(@auth_client).to receive(:redirect_uri=)
-    allow(@auth_client).to receive(:client_id=)
-    allow(@auth_client).to receive(:client_secret=)
-    allow(@auth_client).to receive(:username=)
-    allow(@auth_client).to receive(:username){'anything'}
-    allow(@auth_client).to receive(:expires_at=)
-    allow(@auth_client).to receive(:expires_at)
-    allow(@auth_client).to receive(:expires_in=)
-    allow(@auth_client).to receive(:expires_in)
-    allow(@auth_client).to receive(:access_token=)
-    allow(@auth_client).to receive(:access_token)
-    allow(@auth_client).to receive(:refresh_token=)
-    allow(@auth_client).to receive(:refresh_token)
-    allow(@auth_client).to receive(:fetch_access_token)
+  def stub_store
+    @store = object_double(AuthenticationStore.instance)
+    allow(@store).to receive(:load_stored_credentials){@stored_token_hash}
+    allow(@store).to receive(:save_credentials_in_file)
   end
 
-  def stub_client_settings
-    @settings = double("GoogleClientSettings")
-    allow(@settings).to receive(:client_id).and_return(anything)
-    allow(@settings).to receive(:client_secret).and_return(anything)
-    allow(@settings).to receive(:user_email).and_return(anything)
+  def stub_oauth2_client
+    @oauth2_client = double('GoogleDriveOAuth2Client')
+    allow(@oauth2_client).to receive(:user_email){@stored_token_hash[:user_email]}
   end
 
-  def stub_store_manager
-    @store = double("AuthenticationStore")
-    allow(@store).to receive(:save_credentials_in_file).with(anything, anything)
+  before(:each) do
+    @stored_token_hash = {
+        :access_token => 'access token in stored in a file',
+        :refresh_token => 'refresh token',
+        :expires_in => 3600,
+        :expires_at => (Time.now + 3600).to_s,
+        :user_email => 'anything'
+    }
+    @access_token_instance = AccessToken.new(@stored_token_hash.merge(:access_token => 'new access token'))
+
+    stub_oauth2_client
+    stub_store
+    @manager = AccessTokenManager.new(@oauth2_client ,@store, anything)
   end
 
-  describe "Initialise AccessTokenManager" do
+  describe "Returning a new access token from the server" do
 
     before(:each) do
-      stub_authentication_client
-      stub_client_settings
-      stub_store_manager
+      allow(@oauth2_client).to receive(:request_new_access_token){@access_token_instance}
     end
 
-    it "accepts 4 params for initialising AccessTokenManager" do
-      manager = AccessTokenManager.new(@auth_client, @settings ,@store, anything)
+    it 'Returns a string token, which is returned by the oauth2 client' do
+      expect(@manager.request_new_token('authorization code')).to eq 'new access token'
+    end
 
-      expect(manager).to_not be_nil
+    it 'Stores the token details after it is returned by the oauth2 client' do
+      @manager.request_new_token('authorization code')
+
+      expect(@store).to have_received(:save_credentials_in_file).with(@access_token_instance.to_hash, anything)
     end
   end
 
-  describe "Return an access token" do
+  describe "Return an access token from storage" do
 
-    before(:each) do
-      stub_authentication_client
-      stub_client_settings
-      stub_store_manager
-      @manager = AccessTokenManager.new(@auth_client, @settings ,@store, anything)
-      @token_hash = {:access_token => 'access token in stored in a file',
-                     :refresh_token => 'refresh token',
-                     :expires_in => 3600,
-                     :expires_at => (Time.now + 3600).to_s,
-                     :user_email => 'anything'}
-      @fetched_token = { 'access_token' => 'new fresh token generated',
-                         'expires_in' => 3600 }
+    it "Returns a string token when it is found by AuthenticationStore" do
+      expect(@manager.get_access_token).to eq "access token in stored in a file"
     end
 
-    it "Return an access token when it is found by AuthenticationStore" do
-      allow(@store).to receive(:load_stored_credentials){@token_hash}
-
-      expect(@manager.get_access_token).to eq 'access token in stored in a file'
-    end
-
-
-    it "Refreshes token when access_token is found, but expired" do
-      @token_hash = @token_hash.update(:expires_at => (Time.now - 3600).to_s)
-      allow(@store).to receive(:load_stored_credentials){@token_hash}
-
-      allow(@auth_client).to receive(:fetch_access_token) {@fetched_token}
-
-      expect(@manager.get_access_token).to eq 'new fresh token generated'
-    end
-
-    it "calls store manager to store the new refresh token when it is received" do
-      @token_hash = @token_hash.update(:expires_at => (Time.now - 3600).to_s)
-      allow(@store).to receive(:load_stored_credentials){@token_hash}
-      allow(@auth_client).to receive(:fetch_access_token) {@fetched_token}
-
-      @manager.get_access_token
-
-      expect(@store).to have_received(:save_credentials_in_file)
-    end
-
-    it "Return nil when file is not found by AuthenticationStore" do
+    it "Returns nil when file is not found by AuthenticationStore" do
       allow(@store).to receive(:load_stored_credentials){nil}
 
       expect(@manager.get_access_token).to be_nil
     end
 
-    it "Returns nil when the username in file is different from the user_name in AuthorisationSettings" do
-      allow(@settings).to receive(:user_email).and_return('username_from_settings')
+    it "Returns a refreshed access token string, when authentication file is found, but the access token has expired" do
+       @stored_token_hash.update(:expires_at => (Time.now - 3600).to_s)
+      allow(@oauth2_client).to receive(:refresh_access_token){@access_token_instance}
 
-      allow(@auth_client).to receive(:username=).with('username_from_settings')
-      allow(@auth_client).to receive(:username){'username_from_settings'}
+      expect(@manager.get_access_token).to eq 'new access token'
+    end
 
-      allow(@store).to receive(:load_stored_credentials){{:user_email => 'user email from file'}.merge(@token_hash)}
+    it "Calls store manager to store the new refresh token when it is received" do
+      @stored_token_hash.update(:expires_at => (Time.now - 3600).to_s)
+      allow(@oauth2_client).to receive(:refresh_access_token){@access_token_instance}
+
+      @manager.get_access_token
+
+      expect(@store).to have_received(:save_credentials_in_file).with(@access_token_instance.to_hash, anything)
+    end
+
+    it "Returns nil when the user_email in file is different from one in oauth2_client" do
+      allow(@oauth2_client).to receive(:user_email){'different user_email from the settings'}
 
       expect(@manager.get_access_token).to be_nil
-    end
-  end
-
-  describe "Request new token" do
-
-    before(:each) do
-      stub_authentication_client
-      stub_client_settings
-      stub_store_manager
-      @manager = AccessTokenManager.new(@auth_client, @settings ,@store, anything)
-      @fetched_token = {'expires_in' => 3600,
-                        'access_token' => 'newly generated access token',
-                        'refresh_token' => 'new refresh_token' }
-    end
-
-    it 'requests new token and return the access token' do
-      allow(@auth_client).to receive(:grant_type=).with(nil)
-      allow(@auth_client).to receive(:code=).with('authorization code')
-      allow(@auth_client).to receive(:expires_in=).with(@fetched_token['expired_in'])
-      allow(@auth_client).to receive(:access_token=).with(@fetched_token['access_token'])
-      allow(@auth_client).to receive(:refresh_token=).with(@fetched_token['refresh_token'])
-      allow(@auth_client).to receive(:fetch_access_token).and_return(@fetched_token)
-
-      expect(@manager.request_new_token('authorization code')).to eq 'newly generated access token'
-    end
-
-    it 'stores the token details after it is received' do
-      allow(@auth_client).to receive(:grant_type=).with(nil)
-      allow(@auth_client).to receive(:code=).with('authorization code')
-      allow(@auth_client).to receive(:fetch_access_token).and_return(@fetched_token)
-
-      @manager.request_new_token('authorization code')
-
-      expect(@store).to have_received(:save_credentials_in_file)
-    end
-
-    it 'Raises AccessTokenAuthorisationError when fails to request new token, and server code is 401' do
-      allow(@auth_client).to receive(:code=).with('authorization code')
-      allow(@auth_client).to receive(:fetch_access_token).and_raise(Signet::AuthorizationError.new(anything))
-
-      expect{@manager.request_new_token('authorization code')}.to raise_error(AccessTokenAuthorisationError)
-      end
-
-    it 'Raises AccessTokenAuthorisationError when fails to refresh token, and server code is 401' do
-      @token_hash = {:access_token => 'access token in stored in a file',
-                     :refresh_token => 'refresh token',
-                     :expires_at => (Time.now - 3600).to_s,
-                     :user_email => 'anything'}
-      allow(@store).to receive(:load_stored_credentials){@token_hash}
-      allow(@auth_client).to receive(:fetch_access_token).and_raise(Signet::AuthorizationError.new(anything))
-
-      expect{@manager.get_access_token}.to raise_error(AccessTokenAuthorisationError)
-    end
-
-    it 'Raises AccessTokenClientError when client is not recognised by the server' do
-      @token_hash = {:access_token => 'access token in stored in a file',
-                     :refresh_token => 'refresh token',
-                     :expires_at => (Time.now - 3600).to_s,
-                     :user_email => 'anything'}
-      allow(@store).to receive(:load_stored_credentials){@token_hash}
-      allow(@auth_client).to receive(:fetch_access_token).and_raise(Signet::AuthorizationError.new('"error" : "invalid_client"'))
-
-      expect{@manager.get_access_token}.to raise_error(AccessTokenClientError)
     end
   end
 end

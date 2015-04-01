@@ -6,33 +6,28 @@ require_relative '../../lib/admix/google_drive/google_sheet_helper'
 require_relative '../../lib/admix/google_drive/google_controller'
 require_relative '../../lib/admix/google_drive/google_client_settings'
 
+def generate_auth_file
+  file = File.expand_path('../../assets/DO_NOT_OPEN_OR_CHANGE_ME.json', __FILE__)
+  token_hash = {:access_token => nil,
+                :refresh_token => ENV['GOOGLE_REFRESH_TOKEN'],
+                :expires_in => 3600,
+                :expires_at => (Time.now - (7200)).to_s,
+                :user_email => ENV['GOOGLE_EMAIL']
+  }
+
+  File.open(file, 'w+') do |f|
+    f.write(JSON.pretty_generate(token_hash))
+  end
+  file
+end
+
 RSpec.describe GoogleSheetHelper do
 
-  def generate_auth_file
-    file = File.expand_path('../../assets/DO_NOT_OPEN_OR_CHANGE_ME.json', __FILE__)
-    token_hash = {:access_token => nil,
-                  :refresh_token => ENV['GOOGLE_REFRESH_TOKEN'],
-                  :expires_in => 3600,
-                  :expires_at => (Time.now - (7200)).to_s,
-                  :user_email => ENV['GOOGLE_EMAIL']
-    }
-
-    File.open(file, 'w+') do |f|
-      f.write(JSON.pretty_generate(token_hash))
-    end
-    file
-  end
-
   before(:all) do
-    @client_id =  ENV['GOOGLE_CLIENT_ID']
-    @client_secret = ENV['GOOGLE_CLIENT_SECRET']
-    @user_email = ENV['GOOGLE_EMAIL']
-    @spreadsheet_title = ''
-    @worksheet_title = ''
-
     @file = generate_auth_file
 
-    settings = GoogleClientSettings.new(@client_id, @client_secret, @user_email, @spreadsheet_title, @worksheet_title)
+    settings = GoogleClientSettings.new(ENV['GOOGLE_CLIENT_ID'], ENV['GOOGLE_CLIENT_SECRET'], ENV['GOOGLE_EMAIL'],
+                                        '', '')
     controller = GoogleController.new(settings, @file)
     controller.setup_controller
     @access_token = controller.access_token

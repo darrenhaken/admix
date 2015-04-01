@@ -18,14 +18,14 @@ RSpec.describe AccessToken do
     time_in_past = (Time.now - @one_hour).to_s
     access_token = AccessToken.new(@token_hash.merge({:expires_at => time_in_past}))
 
-    expect(access_token.has_token_expires?).to eq true
+    expect(access_token.has_token_expired?).to eq true
   end
 
   it 'returns false when the token has not expired' do
     time_in_future = (Time.now + @one_hour).to_s
     access_token = AccessToken.new(@token_hash)
 
-    expect(access_token.has_token_expires?).to eq false
+    expect(access_token.has_token_expired?).to eq false
   end
 
   it 'returns a hash that contains the class attributes' do
