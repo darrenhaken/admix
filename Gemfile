@@ -5,6 +5,7 @@ gem 'nokogiri'
 gem 'nori'
 gem 'google_drive'
 gem 'json'
+gem 'whenever'
 
 group :development do
   gem 'rspec'
