@@ -2,14 +2,14 @@ require 'rspec'
 require 'google/api_client'
 
 require_relative '../../../../lib/admix/google_drive/access_token_manager'
-require_relative '../../../../lib/admix/google_drive/authentication_store'
+require_relative '../../../../lib/admix/google_drive/access_token_file_store'
 
 RSpec.describe AccessTokenManager do
 
   def stub_store
-    @store = object_double(AuthenticationStore.instance)
-    allow(@store).to receive(:load_stored_credentials){@stored_token_hash}
-    allow(@store).to receive(:save_credentials_in_file)
+    @store = object_double(AccessTokenFileStore.instance)
+    allow(@store).to receive(:load_stored_access_token){@stored_token_hash}
+    allow(@store).to receive(:store_access_token_hash_in_file)
   end
 
   def stub_oauth2_client
@@ -45,7 +45,7 @@ RSpec.describe AccessTokenManager do
     it 'Stores the token details after it is returned by the oauth2 client' do
       @manager.request_new_token('authorization code')
 
-      expect(@store).to have_received(:save_credentials_in_file).with(@access_token_instance.to_hash, anything)
+      expect(@store).to have_received(:store_access_token_hash_in_file).with(@access_token_instance.to_hash, anything)
     end
   end
 
@@ -56,7 +56,7 @@ RSpec.describe AccessTokenManager do
     end
 
     it "Returns nil when file is not found by AuthenticationStore" do
-      allow(@store).to receive(:load_stored_credentials){nil}
+      allow(@store).to receive(:load_stored_access_token){nil}
 
       expect(@manager.get_access_token).to be_nil
     end
@@ -74,7 +74,7 @@ RSpec.describe AccessTokenManager do
 
       @manager.get_access_token
 
-      expect(@store).to have_received(:save_credentials_in_file).with(@access_token_instance.to_hash, anything)
+      expect(@store).to have_received(:store_access_token_hash_in_file).with(@access_token_instance.to_hash, anything)
     end
 
     it "Returns nil when the user_email in file is different from one in oauth2_client" do

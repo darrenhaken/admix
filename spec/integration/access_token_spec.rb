@@ -4,7 +4,7 @@ require 'json'
 
 require_relative '../../lib/admix/google_drive/access_token_manager'
 require_relative '../../lib/admix/google_drive/google_client_settings'
-require_relative '../../lib/admix/google_drive/authentication_store'
+require_relative '../../lib/admix/google_drive/access_token_file_store'
 require_relative '../../lib/admix/google_drive/google_drive_o_auth2_client'
 
 def setup_oauth2_client
@@ -41,7 +41,7 @@ RSpec.describe AccessTokenManager do
     @expected_file_content.update('user_email'=>'randomemail@example.com')
 
     setup_oauth2_client
-    @store = AuthenticationStore.instance()
+    @store = AccessTokenFileStore.instance()
   end
 
   after(:all) do

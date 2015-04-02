@@ -12,7 +12,7 @@ class AccessTokenManager
   end
 
   def get_access_token
-    token_hash = @store_manager.load_stored_credentials(@auth_file)
+    token_hash = @store_manager.load_stored_access_token(@auth_file)
 
     unless token_hash.nil?
       @access_token = AccessToken.new(token_hash)
@@ -22,7 +22,7 @@ class AccessTokenManager
 
   def request_new_token(authorization_code)
     @access_token = @oauth2_client.request_new_access_token(authorization_code)
-    @store_manager.save_credentials_in_file(@access_token.to_hash, @auth_file)
+    @store_manager.store_access_token_hash_in_file(@access_token.to_hash, @auth_file)
     @access_token.token
   end
 
@@ -39,7 +39,7 @@ class AccessTokenManager
     if @oauth2_client.user_email == @access_token.user_email
       if @access_token.has_token_expired?
         @access_token = refresh_access_token
-        @store_manager.save_credentials_in_file(@access_token.to_hash, @auth_file)
+        @store_manager.store_access_token_hash_in_file(@access_token.to_hash, @auth_file)
       end
       return @access_token.token
     end
