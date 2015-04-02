@@ -7,7 +7,7 @@ RSpec.describe Settings do
 
   before(:all) do
     @config_path = File.expand_path('../../../../assets/yaml', __FILE__)
-    @files = ['admix_settings.yaml', 'filter.yaml']
+    @files = ['admix_settings.yaml', 'mix_type_filter_in_array.yaml']
     @setting = Settings.instance
   end
 

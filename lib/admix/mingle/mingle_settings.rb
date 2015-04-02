@@ -1,6 +1,8 @@
-require_relative '../utils/settings'
+require_relative '../utils/settings_keys_validator'
 
 class MingleSettings
+
+  SETTING_KEYS = ['username', 'password', 'url', 'project_name', 'cfd_start_date']
 
   attr_reader :url, :username, :project_name, :password, :cfd_start_date
 
@@ -13,7 +15,7 @@ class MingleSettings
   end
 
   def self.initialize_with_hash(mingle_details)
-    MingleSettings.check_keys(mingle_details.keys)
+    SettingsKeysValidator.validate_keys_against_setting_keys(mingle_details.keys, SETTING_KEYS)
     MingleSettings.new(mingle_details['username'], mingle_details['password'], mingle_details['url'],
                        mingle_details['project_name'], mingle_details['cfd_start_date'])
   end
@@ -31,19 +33,6 @@ class MingleSettings
 
   def hash
     [@username, @password, @url, @project_name, @cfd_start_date].hash
-  end
-
-  private
-
-  def self.SETTING_KEYS
-    ['username', 'password', 'url', 'project_name', 'cfd_start_date']
-  end
-
-  def self.check_keys(keys)
-    keys_missing = (MingleSettings.SETTING_KEYS - keys)
-    unless keys_missing.empty?
-      raise AdmixSettingsError.new("Settings Key/s missing: #{keys_missing}")
-    end
   end
 
 end

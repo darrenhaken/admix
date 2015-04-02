@@ -3,6 +3,7 @@ require 'singleton'
 
 require_relative '../../../lib/admix/google_drive/google_client_settings'
 require_relative '../../../lib/admix/mingle/mingle_settings'
+require_relative '../utils/settings_keys_validator'
 require_relative 'config_checker'
 require_relative 'admix_settings_error'
 
@@ -53,31 +54,22 @@ class Settings
   end
 
   def load_application_settings()
-    config_checker = ConfigChecker.new(@config_dir, [@files[0]])
+    config_checker = ConfigChecker.new(@config_dir, @files)
     config_checker.check_config_files
 
-    load!
+    load_settings
   end
 
   private
-
-  def load!()
+  def load_settings()
     @settings = YAML::load_file("#{@config_dir}/#{@files[0]}")
     setup_settings
   end
 
   def setup_settings
-    if @settings.is_a?(Hash)
-      check_keys(@settings.keys)
-      @google_client_settings = GoogleClientSettings.initialize_with_hash(@settings['google_details'])
-      @mingle_settings = MingleSettings.initialize_with_hash(@settings['mingle_details'])
-    end
+    SettingsKeysValidator.validate_keys_against_setting_keys(@settings.keys, SETTINGS_KEYS)
+    @google_client_settings = GoogleClientSettings.initialize_with_hash(@settings['google_details'])
+    @mingle_settings = MingleSettings.initialize_with_hash(@settings['mingle_details'])
   end
 
-  def check_keys(keys)
-    keys_missing = (SETTINGS_KEYS - keys)
-    unless keys_missing.empty?
-      raise AdmixSettingsError.new("Settings Key/s missing: #{keys_missing}")
-    end
-  end
 end

@@ -1,4 +1,5 @@
 require 'time'
+
 require_relative 'access_token_authorisation_error'
 require_relative 'access_token_client_error'
 require_relative 'access_token'

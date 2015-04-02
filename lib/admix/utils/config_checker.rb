@@ -8,11 +8,19 @@ class ConfigChecker
   end
 
   def check_config_files
+    check_config_directory
+    check_files
+  end
+
+  private
+  def check_config_directory
     unless Dir.exists?(@config_dir)
       err_msg = "The config directory does not exist.\nMake sure #{@config_dir} exists, and contains the settings files."
       raise ConfigError.new(err_msg)
     end
+  end
 
+  def check_files
     @config_files_names.each do |file_name|
       unless File.exists?("#{@config_dir}/#{file_name}")
         err_msg = "#{file_name} does not exists. Make sure it is in #{@config_dir}"

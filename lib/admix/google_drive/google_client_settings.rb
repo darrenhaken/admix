@@ -1,6 +1,8 @@
-require_relative '../utils/settings'
+require_relative '../utils/settings_keys_validator'
 
 class GoogleClientSettings
+
+  SETTINGS_KEYS = ['client_account', 'client_secret', 'user_email', 'spreadsheet_title', 'worksheet_title']
 
   attr_reader :client_id, :client_secret, :user_email,:spreadsheet_title, :worksheet_title
 
@@ -13,7 +15,7 @@ class GoogleClientSettings
   end
 
   def self.initialize_with_hash(google_details)
-    GoogleClientSettings.check_keys(google_details.keys)
+    SettingsKeysValidator.validate_keys_against_setting_keys(google_details.keys, SETTINGS_KEYS)
     GoogleClientSettings.new(google_details['client_account'], google_details['client_secret'],
                              google_details['user_email'], google_details['spreadsheet_title'],
                              google_details['worksheet_title'])
@@ -33,18 +35,4 @@ class GoogleClientSettings
   def hash
     [@client_id, @client_secret, @user_email, @spreadsheet_title, @worksheet_title].hash
   end
-
-  private
-
-  def self.SETTING_KEYS
-    ['client_account', 'client_secret', 'user_email', 'spreadsheet_title', 'worksheet_title']
-  end
-
-  def self.check_keys(keys)
-    keys_missing = (GoogleClientSettings.SETTING_KEYS - keys)
-    unless keys_missing.empty?
-      raise AdmixSettingsError.new("Settings Key/s missing: #{keys_missing}")
-    end
-  end
-
 end
