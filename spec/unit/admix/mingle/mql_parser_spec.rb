@@ -16,7 +16,7 @@ RSpec.describe MQLParser do
       mql_parser = MQLParser.new(yaml_file, @select_element)
       expected_mql = "SELECT COUNT(*) WHERE Type = Story"
 
-      result = mql_parser.parse
+      result = mql_parser.format_select_statement_for_cards
 
       expect(result).to eq expected_mql
     end
@@ -26,7 +26,7 @@ RSpec.describe MQLParser do
       mql_parser = MQLParser.new(yaml_file, @select_element)
       expected_mql = "SELECT COUNT(*) WHERE Type = Story"
 
-      result = mql_parser.parse
+      result = mql_parser.format_select_statement_for_cards
 
       expect(result).to eq expected_mql
     end
@@ -36,7 +36,7 @@ RSpec.describe MQLParser do
       mql_parser = MQLParser.new(yaml_file, @select_element)
       expected_mql = "SELECT COUNT(*) WHERE Type = Story OR Type = Defect"
 
-      result = mql_parser.parse
+      result = mql_parser.format_select_statement_for_cards
 
       expect(result).to eq expected_mql
     end
@@ -46,7 +46,7 @@ RSpec.describe MQLParser do
       mql_parser = MQLParser.new(yaml_file, @select_element)
       expected_mql = "SELECT COUNT(*) WHERE Type = Story OR Type = 'Power Ups'"
 
-      result = mql_parser.parse
+      result = mql_parser.format_select_statement_for_cards
 
       expect(result).to eq expected_mql
     end
@@ -56,7 +56,7 @@ RSpec.describe MQLParser do
       mql_parser = MQLParser.new(yaml_file, @select_element)
       expected_mql = "SELECT COUNT(*) WHERE Type = Story OR Type = Defect OR Type = 'Power Ups'"
 
-      result = mql_parser.parse
+      result = mql_parser.format_select_statement_for_cards
 
       expect(result).to eq expected_mql
     end
@@ -66,7 +66,7 @@ RSpec.describe MQLParser do
       mql_parser = MQLParser.new(yaml_file, @select_element)
       expected_mql = "SELECT COUNT(*) WHERE Type != Story"
 
-      result = mql_parser.parse
+      result = mql_parser.format_select_statement_for_cards
 
       expect(result).to eq expected_mql
     end
@@ -76,7 +76,7 @@ RSpec.describe MQLParser do
       mql_parser = MQLParser.new(yaml_file, @select_element)
       expected_mql = "SELECT COUNT(*) WHERE Type != Story OR Type != Defect OR Type != 'Power Ups'"
 
-      result = mql_parser.parse
+      result = mql_parser.format_select_statement_for_cards
 
       expect(result).to eq expected_mql
     end
@@ -86,7 +86,7 @@ RSpec.describe MQLParser do
       mql_parser = MQLParser.new(yaml_file, @select_element)
       expected_mql = "SELECT COUNT(*) WHERE Type = Story OR Type != Defect OR Type != 'Power Ups'"
 
-      result = mql_parser.parse
+      result = mql_parser.format_select_statement_for_cards
 
       expect(result).to eq expected_mql
     end
@@ -99,7 +99,7 @@ RSpec.describe MQLParser do
       mql_parser = MQLParser.new(yaml_file, @select_element)
       expected_mql = "SELECT COUNT(*) WHERE Status = Next"
 
-      result = mql_parser.parse
+      result = mql_parser.format_select_statement_for_cards
 
       expect(result).to eq expected_mql
     end
@@ -109,7 +109,7 @@ RSpec.describe MQLParser do
       mql_parser = MQLParser.new(yaml_file, @select_element)
       expected_mql = "SELECT COUNT(*) WHERE Status = Next OR Status = Dev"
 
-      result = mql_parser.parse
+      result = mql_parser.format_select_statement_for_cards
 
       expect(result).to eq expected_mql
     end
@@ -119,7 +119,7 @@ RSpec.describe MQLParser do
       mql_parser = MQLParser.new(yaml_file, @select_element)
       expected_mql = "SELECT COUNT(*) WHERE Status = 'Dev done' OR Status <= 'A & D done' OR Status > Next"
 
-      result = mql_parser.parse
+      result = mql_parser.format_select_statement_for_cards
 
       expect(result).to eq expected_mql
     end
@@ -131,7 +131,7 @@ RSpec.describe MQLParser do
       mql_parser = MQLParser.new(yaml_file, @select_element)
       expected_mql = "SELECT COUNT(*) WHERE (Type = 'Power Ups') AND (Status <= 'A & D done')"
 
-      result = mql_parser.parse
+      result = mql_parser.format_select_statement_for_cards
 
       expect(result).to eq expected_mql
     end
@@ -142,7 +142,7 @@ RSpec.describe MQLParser do
         mql_parser = MQLParser.new(yaml_file, @select_element)
         expected_mql = "SELECT COUNT(*) WHERE 'Moved to production date' > '04/11/2014'  AND (Type = 'Power Ups')"
 
-        result = mql_parser.statement_for_count_since('04/11/2014')
+        result = mql_parser.format_count_statement_for_card_live_since('04/11/2014')
 
         expect(result).to eq expected_mql
       end

@@ -22,24 +22,20 @@ class MingleController
 
   def initialize(mingle_settings, filter_file)
     @mingle_settings = mingle_settings
-    @filter_file = filter_file
+    @mql_parser = MQLParser.new(filter_file, SELECT_ELEMENT)
     @mingle_loader = MingleResourceLoader.new(mingle_settings.username, mingle_settings.password,
                                               mingle_settings.url, RestClient)
   end
 
   def get_cards_statistics
-    mql_parser = MQLParser.new(@filter_file, SELECT_ELEMENT)
+    mingle_cards_filter = @mql_parser.format_select_statement_for_cards
+    cards_in_xml_format = send_request(mingle_cards_filter)
+    return nil unless cards_in_xml_format
 
-    cards_mql = mql_parser.parse
-    send_request(cards_mql)
-    cards = @mingle_loader.resource
-    return nil unless cards
+    number_of_cards_in_xml_format = get_number_of_cards_live
 
-    count_mql = mql_parser.statement_for_count_since(@mingle_settings.cfd_start_date)
-    send_request(count_mql)
-    count = @mingle_loader.resource
+    mingle_wall = MingleWallSnapshot.new(cards_in_xml_format, number_of_cards_in_xml_format)
 
-    mingle_wall = MingleWallSnapshot.new(cards, count)
     mingle_statistics = MingleWallStatistics.new(mingle_wall)
     mingle_statistics.statistics_for_cfd
   end
@@ -52,5 +48,10 @@ class MingleController
       print("\nIncorrect Mingle username/password. Please Update the mingle settings in admix setting file\n")
       exit(-1)
     end
+  end
+
+  def get_number_of_cards_live
+    count_mql = @mql_parser.format_count_statement_for_card_live_since(@mingle_settings.cfd_start_date)
+    send_request(count_mql)
   end
 end

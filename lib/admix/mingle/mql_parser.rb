@@ -10,11 +10,22 @@ class MQLParser
     @mql_select_statement = "SELECT #{select_elements_statement} WHERE "
   end
 
-  def parse
+  def format_select_statement_for_cards
     filters = yaml_filters
-    mql_for_types = get_types(filters)
-    mql_for_status = get_status(filters)
+    mql_for_types = format_mql_for_types(filters)
+    mql_for_status = format_mql_for_status(filters)
 
+    format_the_full_mql_statement(mql_for_status, mql_for_types)
+  end
+
+  def format_count_statement_for_card_live_since(date)
+    filters = yaml_filters
+    mql_for_types = format_mql_for_types(filters)
+    "SELECT COUNT(*) WHERE 'Moved to production date' > '#{date}'  AND (#{mql_for_types})"
+  end
+
+  private
+  def format_the_full_mql_statement(mql_for_status, mql_for_types)
     if mql_for_status and mql_for_types
       @mql_select_statement + '(' + mql_for_types + ')' + AND + '(' + mql_for_status + ')'
     elsif mql_for_status
@@ -26,16 +37,8 @@ class MQLParser
     end
   end
 
-  def statement_for_count_since(date)
-    filters = yaml_filters
-    mql_for_types = get_types(filters)
-    "SELECT COUNT(*) WHERE 'Moved to production date' > '#{date}'  AND (#{mql_for_types})"
-  end
-
-  private
-
   def yaml_filters
-    yaml_obj = YAML.load @file
+    yaml_obj = YAML.load(@file)
     yaml_obj['filters']
   end
 
@@ -48,7 +51,7 @@ class MQLParser
     nil
   end
 
-  def get_status(filters)
+  def format_mql_for_status(filters)
     status = filters_for_key(filters, "Status")
     return nil if status.nil?
 
@@ -58,7 +61,7 @@ class MQLParser
     "Status #{status}"
   end
 
-  def get_types(filter)
+  def format_mql_for_types(filter)
     types = filters_for_key(filter, "Type")
     return nil if types.nil?
 
