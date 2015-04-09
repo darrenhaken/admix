@@ -18,6 +18,13 @@ RSpec.describe MQLCardProperty do
     expect(mql_card_property.property).to eq 'status'
   end
 
+  it 'returns MQLCardProperty with property "COUNT(*)"' do
+    mql_card_property = MQLCardProperty.count
+
+    expect(mql_card_property).to be_a MQLCardProperty
+    expect(mql_card_property.property).to eq 'COUNT(*)'
+  end
+
   it 'returns MQLCardProperty with property "type"' do
     mql_card_property = MQLCardProperty.type
 

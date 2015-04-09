@@ -22,4 +22,8 @@ class MQLCardProperty
     MQLCardProperty.new('type')
   end
 
+  def self.count()
+    MQLCardProperty.new('COUNT(*)')
+  end
+  
 end
