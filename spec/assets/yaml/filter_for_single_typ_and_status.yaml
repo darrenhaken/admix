@@ -1,5 +1,5 @@
 filters:
   - Status:
-    - '<= A & D done'
+    - = A & D done
   - Type:
     - Power Ups

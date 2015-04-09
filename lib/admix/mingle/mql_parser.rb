@@ -1,117 +1,67 @@
 require 'yaml'
 
+require_relative 'mingle_query_language/mql_clause'
+
 class MQLParser
 
-  OR = " OR "
-  AND = " AND "
-
-  def initialize(file, select_elements_statement)
-    @file = File.read(file)
-    @mql_select_statement = "SELECT #{select_elements_statement} WHERE "
+  def self.parse_type_filters_to_mql_clause(file)
+    types_filters = get_filters_in_file_for(file, "Type")
+    parse_filters_for_type(types_filters)
   end
 
-  def format_select_statement_for_cards
-    filters = yaml_filters
-    mql_for_types = format_mql_for_types(filters)
-    mql_for_status = format_mql_for_status(filters)
-
-    format_the_full_mql_statement(mql_for_status, mql_for_types)
-  end
-
-  def format_count_statement_for_card_live_since(date)
-    filters = yaml_filters
-    mql_for_types = format_mql_for_types(filters)
-    "SELECT COUNT(*) WHERE 'Moved to production date' > '#{date}'  AND (#{mql_for_types})"
+  def self.parse_status_filters_to_mql_clause(file)
+    status_filters = get_filters_in_file_for(file, "Status")
+    parse_filters_for_status(status_filters)
   end
 
   private
-  def format_the_full_mql_statement(mql_for_status, mql_for_types)
-    if mql_for_status and mql_for_types
-      @mql_select_statement + '(' + mql_for_types + ')' + AND + '(' + mql_for_status + ')'
-    elsif mql_for_status
-      @mql_select_statement + mql_for_status
-    elsif mql_for_types
-      @mql_select_statement + mql_for_types
-    else
-      nil
-    end
+  def self.get_filters_in_file_for(file, key)
+    filters = yaml_filters(File.read(file))
+    filters_for_key(filters, key)
   end
 
-  def yaml_filters
-    yaml_obj = YAML.load(@file)
+  def self.parse_filters_for_status(status)
+    return nil if status.nil?
+    return mql_clauses_for_filters_in_array(status, &:mql_clause_for_a_status) if status.is_a?(Array)
+    mql_clause_for_a_status(status)
+  end
+
+  def self.parse_filters_for_type(types)
+    return nil if types.nil?
+    return mql_clauses_for_filters_in_array(types, &:mql_clause_for_a_type) if types.is_a?(Array)
+    mql_clause_for_a_type(types)
+  end
+
+  def self.mql_clause_for_a_status(status)
+    status.slice!('= ')
+    MQLClause.status_is(status)
+  end
+
+  def self.mql_clause_for_a_type(type)
+    negating = type.slice!('not ')
+    is_negating?(negating)? MQLClause.type_is_not(type):MQLClause.type_is(type)
+  end
+
+  def self.mql_clauses_for_filters_in_array(filters, &mql_clause_for_single_filter)
+    mql_clause = mql_clause_for_single_filter.call(MQLParser, filters.shift)
+    filters.each {
+        |filter| mql_clause = mql_clause.or(mql_clause_for_single_filter.call(MQLParser, filter))
+    }
+    mql_clause
+  end
+
+  def self.yaml_filters(file)
+    yaml_obj = YAML.load(file)
     yaml_obj['filters']
   end
 
-  def filters_for_key(filter, key)
-    filter.each do |f|
-      if f.has_key?(key)
-        return f[key]
-      end
-    end
-    nil
+  def self.filters_for_key(filter, key)
+    filter.each{|f| return f[key] if f.has_key?(key)}
+    return nil
   end
 
-  def format_mql_for_status(filters)
-    status = filters_for_key(filters, "Status")
-    return nil if status.nil?
-
-    if status.is_a?(Array)
-      return statement_for_status_in_array(status)
-    end
-    "Status #{status}"
-  end
-
-  def format_mql_for_types(filter)
-    types = filters_for_key(filter, "Type")
-    return nil if types.nil?
-
-    if types.is_a?(Array)
-      statement_for_types_in_array(types)
-    else
-      negating = is_negating?(types)
-      types.slice!('not ')
-      negating ? "Type != #{types}":"Type = #{types}"
-    end
-  end
-
-  def statement_for_types_in_array(types)
-    mql_statement = statement_for_single_typ(types.delete_at(0))
-    types.each {
-        |type| mql_statement += OR + statement_for_single_typ(type)
-    }
-    mql_statement
-  end
-
-  def statement_for_status_in_array(status)
-    mql_statement = statement_for_single_status(status.delete_at(0))
-    status.each {
-        |a_status| mql_statement += OR + statement_for_single_status(a_status)
-    }
-    mql_statement
-  end
-
-  def statement_for_single_status(a_status)
-    if is_single_word?(a_status)
-      "Status #{a_status}"
-    else
-      sign = a_status.split(' ', 2)[0]
-      the_status = a_status.split(' ', 2)[1]
-      "Status #{sign} '#{the_status}'"
-    end
-  end
-
-  def statement_for_single_typ(type)
-    negating = is_negating?(type)
-    type.slice!('not ')
-    type = is_single_word?(type)? type:"'#{type}'"
-    negating ? "Type != #{type}":"Type = #{type}"
-  end
-
-  def is_negating?(clause)
+  def self.is_negating?(clause)
+    return false if clause.nil?
     clause.start_with?('not ')
-  end
-
-  def is_single_word?(string)
-    string.scan(/[\w'-]+/).length == 1
   end
 end
