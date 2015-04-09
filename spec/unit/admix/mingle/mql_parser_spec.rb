@@ -113,21 +113,4 @@ RSpec.describe MQLParser do
       expect(result.clause).to eq expected_result
     end
   end
-
-  # describe "Parse Mingle filters in a yaml file containing 'Type' and 'Status' to MQLClause object" do
-  #
-  #   describe "Generate MQL string that returns number of cards in Live since given date for the card types in filter" do
-  #     it "returns MQL statement that returns count only " do
-  #       yaml_file = File.expand_path(@yaml_assets_path + 'filter_for_single_typ_and_status.yaml', __FILE__)
-  #       mql_parser = MQLParser.new(yaml_file, @select_element)
-  #       expected_mql = "SELECT COUNT(*) WHERE 'Moved to production date' > '04/11/2014'  AND (Type = 'Power Ups')"
-  #
-  #       result = mql_parser.format_count_statement_for_card_live_since('04/11/2014')
-  #
-  #       expect(result).to eq expected_mql
-  #     end
-  #   end
-  #
-  # end
-
 end
