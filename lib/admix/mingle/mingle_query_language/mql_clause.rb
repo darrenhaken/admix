@@ -31,7 +31,7 @@ class MQLClause
 
   MOVED_TO = 'Moved to'
   def self.moved_to_is_larger_than_date(card_status, date)
-    MQLClause.new("\'#{MOVED_TO} #{card_status}\' > \'#{date}\'")
+    MQLClause.new("\'#{MOVED_TO} #{card_status} date\' > \'#{date}\'")
   end
 
   def or(another_clause)

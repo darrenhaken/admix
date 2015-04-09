@@ -1,7 +1,7 @@
 require 'rest_client'
 
 require_relative '../../../lib/admix/mingle/mingle_resource_loader'
-require_relative '../../../lib/admix/mingle/mql_parser'
+require_relative '../../../lib/admix/mingle/mql_controller'
 require_relative '../../../lib/admix/mingle/mingle_settings'
 require_relative '../../../lib/admix/mingle/mingle_wall_snapshot'
 require_relative '../../../lib/admix/mingle/mingle_wall_statistics'
@@ -22,13 +22,14 @@ class MingleController
 
   def initialize(mingle_settings, filter_file)
     @mingle_settings = mingle_settings
-    @mql_parser = MQLParser.new(filter_file, SELECT_ELEMENT)
+    @mql_controller = MQLController.new(filter_file)
+    @card_property_to_select = MQLCardProperty.name.and(MQLCardProperty.status).and(MQLCardProperty.type)
     @mingle_loader = MingleResourceLoader.new(mingle_settings.username, mingle_settings.password,
                                               mingle_settings.url, RestClient)
   end
 
   def get_cards_statistics
-    mingle_cards_filter = @mql_parser.format_select_statement_for_cards
+    mingle_cards_filter = @mql_controller.format_select_statement_for_cards(@card_property_to_select)
     cards_in_xml_format = send_request(mingle_cards_filter)
     return nil unless cards_in_xml_format
 
@@ -51,7 +52,7 @@ class MingleController
   end
 
   def get_number_of_cards_live
-    count_mql = @mql_parser.format_count_statement_for_card_live_since(@mingle_settings.cfd_start_date)
+    count_mql = @mql_controller.format_count_statement_for_card_live_since(@mingle_settings.cfd_start_date)
     send_request(count_mql)
   end
 end

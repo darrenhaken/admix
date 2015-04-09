@@ -85,14 +85,14 @@ RSpec.describe MQLClause do
     mql_clause = MQLClause.moved_to_is_larger_than_date('production', '10/01/2014')
 
     expect(mql_clause).to be_a MQLClause
-    expect(mql_clause.clause).to eq "'Moved to production' > '10/01/2014'"
+    expect(mql_clause.clause).to eq "'Moved to production date' > '10/01/2014'"
   end
 
   it "returns MQLClause with 'Moved to production' > '10/01/2014 AND Type is Story' as its clause" do
     mql_clause = MQLClause.moved_to_is_larger_than_date('production', '10/01/2014').and(MQLClause.type_is('Story'))
 
     expect(mql_clause).to be_a MQLClause
-    expect(mql_clause.clause).to eq "('Moved to production' > '10/01/2014') AND (Type is Story)"
+    expect(mql_clause.clause).to eq "('Moved to production date' > '10/01/2014') AND (Type is Story)"
   end
 
 end
