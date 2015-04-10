@@ -1,8 +1,6 @@
 require_relative '../../lib/admix/utils/settings'
-require_relative '../../lib/admix/google_drive/google_controller'
-require_relative '../../lib/admix/google_drive/google_client_settings'
 require_relative '../../lib/admix/mingle/mingle_controller'
-require_relative '../../lib/admix/mingle/mingle_settings'
+require_relative '../../lib/admix/cfd_filler_for_worksheet'
 
 class AdmixController
 
@@ -18,29 +16,16 @@ class AdmixController
       exit(-1)
     end
 
-    create_google_controller(settings.google_client_settings)
-    create_mingle_controller(settings.mingle_settings, settings.filter_file)
+    @mingle_controller = MingleController.new(settings.mingle_settings, settings.filter_file)
+    @data_filler = CfdFillerForWorksheet.new(settings.google_client_settings, PATH_TO_FILE)
+
+    print("\nYou've authorized access to the application successfully!\n")
   end
 
   def sync_data
-    data = @mingle_controller.get_cards_statistics
-    @google_controller.insert_cfd_to_spreadsheet(data)
+    cfd_data_point = @mingle_controller.get_cards_statistics
+    @data_filler.insert_cfd_data_point_for_date(cfd_data_point, Time.now)
+    @data_filler.commit_changes
   end
 
-  private
-  def create_mingle_controller(mingle_settings, filter_file_name)
-    @mingle_controller = MingleController.new(mingle_settings, filter_file_name)
-  end
-
-  def create_google_controller(google_settings)
-    @google_controller = GoogleController.new(google_settings, PATH_TO_FILE)
-    @google_controller.setup_controller
-
-    client_access_token = @google_controller.access_token
-    unless client_access_token
-      print("\nSorry, the application could not complete Athu2 process!\n")
-      return
-    end
-    print("\nYou've authorized access to the application successfully!\n")
-  end
 end

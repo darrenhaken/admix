@@ -3,8 +3,8 @@ require 'google/api_client'
 require_relative '../../../lib/admix/google_drive/access_token_file_store'
 require_relative '../../../lib/admix/google_drive/access_token_manager'
 require_relative '../../../lib/admix/google_drive/google_drive_o_auth2_client'
-require_relative '../../../lib/admix/google_drive/google_sheet_helper'
-require_relative '../../../lib/admix/google_drive/google_sheet_column_mapper'
+require_relative '../../../lib/admix/google_drive/google_worksheet_wrapper'
+require_relative '../../../lib/admix/google_drive/cfd_data_point_to_column_mapper'
 
 class GoogleController
 
@@ -22,14 +22,11 @@ class GoogleController
     google_client = Google::APIClient.new(:application_name => 'Admix', :application_version => 0.1).authorization
     @oauth2_client = GoogleDriveOAuth2Client.new(google_client, @settings)
     @token_manager = AccessTokenManager.new(@oauth2_client, store_manager, @auth_file)
-    check_access_token
   end
 
-  def insert_cfd_to_spreadsheet(cdf)
+  def access_token
     check_access_token
-    @spreadsheet_helper = GoogleSheetHelper.new(@access_token, @settings.spreadsheet_title, @settings.worksheet_title)
-    @spreadsheet_helper.update_cfd_for_day_date_column!(cdf, GoogleSheetColumnMapper.mapping)
-    @spreadsheet_helper.write_data_to_worksheet_with_mapping(cdf, GoogleSheetColumnMapper.mapping)
+    @access_token
   end
 
   private

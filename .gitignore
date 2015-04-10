@@ -44,3 +44,4 @@ lib/admix/admix_settings.yaml
 lib/assets/auth_details.json
 lib/config/alpha_setting.yaml
 lib/scheduler/logs
+spec/assets/DO_NOT_OPEN_OR_CHANGE_ME.json
