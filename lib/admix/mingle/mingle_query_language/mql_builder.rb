@@ -14,7 +14,7 @@ class MQLBuilder
   end
 
   def as_of(date)
-    @private_statement = "#{@private_statement} AS OF \"#{date}\""
+    @private_statement = "#{@private_statement} AS OF '#{date}'"
     self
   end
 

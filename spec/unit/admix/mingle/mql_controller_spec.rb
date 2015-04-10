@@ -41,4 +41,14 @@ RSpec.describe MQLController do
     expect(result).to eq expected_mql
   end
 
+  it "returns MQL statement for cards in a given day" do
+    yaml_file = File.expand_path(@yaml_assets_path + 'filter_for_single_typ_and_status.yaml', __FILE__)
+    controller = MQLController.new(yaml_file)
+    expected_mql = "SELECT name, type, status AS OF '15/03/2014' WHERE (Status is 'A & D done') AND (Type is 'Power Ups')"
+
+    result = controller.format_select_statement_for_cards_in_date(@card_property_to_select, '15/03/2014')
+
+    expect(result).to eq expected_mql
+  end
+
 end

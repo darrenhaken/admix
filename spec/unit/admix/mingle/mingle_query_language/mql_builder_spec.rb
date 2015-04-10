@@ -24,7 +24,7 @@ RSpec.describe MQLBuilder do
     builder = MQLBuilder.select(MQLCardProperty.name.and(MQLCardProperty.type)).as_of('22/03/2015').where(MQLClause.type_is('Story'))
 
     expect(builder).to be_a MQLBuilder
-    expect(builder.statement).to eq 'SELECT name, type AS OF "22/03/2015" WHERE Type is Story'
+    expect(builder.statement).to eq "SELECT name, type AS OF '22/03/2015' WHERE Type is Story"
   end
   
 end
