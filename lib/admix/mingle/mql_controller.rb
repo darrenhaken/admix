@@ -16,17 +16,21 @@ class MQLController
     builder.statement
   end
 
+  def format_count_statement_for_card_live_since(date)
+    format_count_statement_for_card_live_since_as_of_date(date, Time.now.strftime("%d/%m/%Y"))
+  end
+
   def format_select_statement_for_cards_in_date(mql_card_property, date)
     combined_mql_clause = build_mql_clause
     builder = MQLBuilder.select(mql_card_property).as_of(date).where(combined_mql_clause)
     builder.statement
   end
 
-  def format_count_statement_for_card_live_since(date)
+  def format_count_statement_for_card_live_since_as_of_date(date, as_of_date)
     mql_clause_for_moved_to = MQLClause.moved_to_status_is_larger_than_date(PRODUCTION_STATUS, date)
     mql_type_clause = MQLParser.parse_type_filters_to_mql_clause(@filter_file)
     mql_clause = mql_clause_for_moved_to.and(mql_type_clause)
-    builder = MQLBuilder.select(MQLCardProperty.count).where(mql_clause)
+    builder = MQLBuilder.select(MQLCardProperty.count).as_of(as_of_date).where(mql_clause)
     builder.statement
   end
 

@@ -34,7 +34,7 @@ RSpec.describe MQLController do
   it "returns MQL statement that returns count only " do
     yaml_file = File.expand_path(@yaml_assets_path + 'filter_for_single_typ_and_status.yaml', __FILE__)
     controller = MQLController.new(yaml_file)
-    expected_mql = "SELECT COUNT(*) WHERE ('Moved to production date' > '04/11/2014') AND (Type is 'Power Ups')"
+    expected_mql = "SELECT COUNT(*) AS OF '#{Time.now.strftime("%d/%m/%Y")}' WHERE ('Moved to production date' > '04/11/2014') AND (Type is 'Power Ups')"
 
     result = controller.format_count_statement_for_card_live_since('04/11/2014')
 
