@@ -1,6 +1,6 @@
-require_relative '../../lib/admix/google_drive/google_controller'
-require_relative '../../lib/admix/google_drive/google_worksheet_wrapper'
-require_relative '../../lib/admix/google_drive/cfd_data_point_to_column_mapper'
+require_relative '../../admix/google_drive/google_controller'
+require_relative '../../admix/google_drive/google_worksheet_wrapper'
+require_relative 'cfd_data_point_to_column_mapper'
 
 class CfdFillerForWorksheet
 

@@ -23,7 +23,7 @@ class MQLController
   end
 
   def format_count_statement_for_card_live_since(date)
-    mql_clause_for_moved_to = MQLClause.moved_to_is_larger_than_date(PRODUCTION_STATUS, date)
+    mql_clause_for_moved_to = MQLClause.moved_to_status_is_larger_than_date(PRODUCTION_STATUS, date)
     mql_type_clause = MQLParser.parse_type_filters_to_mql_clause(@filter_file)
     mql_clause = mql_clause_for_moved_to.and(mql_type_clause)
     builder = MQLBuilder.select(MQLCardProperty.count).where(mql_clause)

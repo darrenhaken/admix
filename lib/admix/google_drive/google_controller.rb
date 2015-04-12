@@ -4,7 +4,7 @@ require_relative '../../../lib/admix/google_drive/access_token_file_store'
 require_relative '../../../lib/admix/google_drive/access_token_manager'
 require_relative '../../../lib/admix/google_drive/google_drive_o_auth2_client'
 require_relative '../../../lib/admix/google_drive/google_worksheet_wrapper'
-require_relative '../../../lib/admix/google_drive/cfd_data_point_to_column_mapper'
+require_relative '../../../lib/admix/cumulative_flow_diagram_logic/cfd_data_point_to_column_mapper'
 
 class GoogleController
 

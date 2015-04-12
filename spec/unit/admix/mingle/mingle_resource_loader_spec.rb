@@ -10,14 +10,14 @@ RSpec.describe MingleResourceLoader do
     @password = 'fakepassword'
     @mingle_url = 'tw-digital.mingle.thoughtworks.com'
     @path_to_assets = "../../../../assets/xml/"
-    @wrapper = MingleResourceLoader.new(@username, @password, @mingle_url, RestClient)
+    @loader = MingleResourceLoader.new(@username, @password, @mingle_url, RestClient)
   end
 
   describe 'Initialising MingleResourceLoader' do
     it 'formats the Mingle API rest resource URL given the name of the project' do
       expected_format = 'https://'+@username+':'+@password+'@'+@mingle_url+'/api/v2/projects/tw_dot_com/cards/execute_mql.xml'
 
-      expect(@wrapper.full_rest_resource('tw_dot_com')).to eq expected_format
+      expect(@loader.full_rest_resource('tw_dot_com')).to eq expected_format
     end
   end
 
@@ -30,8 +30,8 @@ RSpec.describe MingleResourceLoader do
 
     before(:each) do
       @rest_client = object_double("RestClient")
-      @project_url = @wrapper.full_rest_resource('project')
-      @wrapper = MingleResourceLoader.new(@username, @password, @mingle_url, @rest_client)
+      @project_url = @loader.full_rest_resource('project')
+      @loader = MingleResourceLoader.new(@username, @password, @mingle_url, @rest_client)
     end
 
     def make_response(**args)
@@ -44,7 +44,7 @@ RSpec.describe MingleResourceLoader do
       response_body = File.read(xml_file)
       allow(@rest_client).to receive(:get) {make_response(:code => 200, :body => response_body)}
 
-      get_result = @wrapper.get?('project', @mql)
+      get_result = @loader.get('project', @mql)
 
       expect(get_result).to be response_body
     end
@@ -52,7 +52,7 @@ RSpec.describe MingleResourceLoader do
     it 'returns false when getting cards and the returned status code not in range 2XX'do
       allow(@rest_client).to receive(:get) {make_response(:code => 400)}
 
-      get_result = @wrapper.get?('project', @mql)
+      get_result = @loader.get('project', @mql)
 
       expect(get_result).to be nil
     end
@@ -60,13 +60,13 @@ RSpec.describe MingleResourceLoader do
     it "throws MingleAPIAuthorisationError when status code is 401 " do
       allow(@rest_client).to receive(:get).and_raise(RestClient::Unauthorized, "Unauthorized Access")
 
-      expect {@wrapper.get?('project', @mql)}.to raise_error(MingleAuthenticationError)
+      expect {@loader.get('project', @mql)}.to raise_error(MingleAuthenticationError)
     end
 
     it "calls get with the project_url and sets 'mql' parameter from mql filter" do
       allow(@rest_client).to receive(:get) {make_response(:code => 200)}
 
-      @wrapper.get?('project', @mql)
+      @loader.get('project', @mql)
 
       expect(@rest_client).to have_received(:get).with(@project_url, @params).once
     end

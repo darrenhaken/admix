@@ -17,22 +17,21 @@ class MingleWallSnapshot
     @number_of_live_cards = parse_xml(xml_live_card_counts, false)
   end
 
-  #TODO refactor the following two methods into one private method
   def number_of_cards_with_status(card_status)
-    return 0 if @cards.nil?
-    return nil unless CARD_STATUS.include?(card_status)
-    num_of_cards = @cards.select{ |c| c.status == card_status}
-    num_of_cards.length
+    number_of_cards(card_status, CARD_STATUS){|card| card.status == card_status}
   end
 
   def number_of_cards_of_type(card_type)
-    return 0 if @cards.nil?
-    return nil unless CARD_TYPES.include?(card_type)
-    num_of_cards = @cards.select{|c| c.type == card_type}
-    num_of_cards.length
+    number_of_cards(card_type, CARD_TYPES){|card| card.type == card_type}
   end
 
   private
+  def number_of_cards(card_key, accepted_keys, &selection_block)
+    return 0 if @cards.nil?
+    return nil unless accepted_keys.include?(card_key)
+    num_of_cards = @cards.select{|card| selection_block.call(card)}
+    num_of_cards.length
+  end
 
   def parse_xml(xml_string, parse_cards)
     cards_hash = Nori.new.parse(xml_string)

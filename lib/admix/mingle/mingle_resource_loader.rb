@@ -22,7 +22,7 @@ class MingleResourceLoader
     @rest_client = rest_client
   end
 
-  def get?(project_name, filter_by_mql)
+  def get(project_name, filter_by_mql)
     cards_url = full_rest_resource(project_name)
 
     begin

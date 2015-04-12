@@ -1,12 +1,12 @@
 require_relative '../../../lib/admix/mingle/card_status'
 
-class MingleWallStatistics
+class MingleCfdDataPoint
 
   def initialize(mingle_wall)
     @mingle_wall = mingle_wall
   end
 
-  def statistics_for_cfd
+  def data_point
     {
         CardStatus.QA => @mingle_wall.number_of_cards_with_status('QA'),
         CardStatus.QA_DONE => @mingle_wall.number_of_cards_with_status('QA done'),

@@ -10,19 +10,19 @@ class MQLCardProperty
     MQLCardProperty.new("#{property}, #{another_mql_property.property}")
   end
 
-  def self.name()
+  def self.name
     MQLCardProperty.new('name')
   end
 
-  def self.status()
+  def self.status
     MQLCardProperty.new('status')
   end
 
-  def self.type()
+  def self.type
     MQLCardProperty.new('type')
   end
 
-  def self.count()
+  def self.count
     MQLCardProperty.new('COUNT(*)')
   end
   

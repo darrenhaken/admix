@@ -1,13 +1,12 @@
 require 'rspec'
 
 require_relative '../spec_helper'
-require_relative '../../lib/admix/cfd_filler_for_worksheet'
 require_relative '../../lib/admix/google_drive/google_client_settings'
-require_relative '../../lib/admix/mingle/mingle_wall_statistics'
-
 require_relative '../../lib/admix/google_drive/google_worksheet_wrapper'
 require_relative '../../lib/admix/google_drive/access_token_file_store'
-require_relative '../../lib/admix/google_drive/cfd_data_point_to_column_mapper'
+require_relative '../../lib/admix/cumulative_flow_diagram_logic/mingle_cfd_data_point'
+require_relative '../../lib/admix/cumulative_flow_diagram_logic/cfd_filler_for_worksheet'
+require_relative '../../lib/admix/cumulative_flow_diagram_logic/cfd_data_point_to_column_mapper'
 
 RSpec.describe CfdFillerForWorksheet do
 
