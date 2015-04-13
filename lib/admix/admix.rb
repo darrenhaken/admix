@@ -14,6 +14,6 @@ class AdmixApp
   end
 
   def sync
-    @controller.sync_data
+    @controller.fill_today_report
   end
 end

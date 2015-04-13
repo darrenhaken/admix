@@ -37,8 +37,10 @@ class CfdFillerForWorksheet
   end
 
 
+  DATE_FORMAT = "%d/%-m/%Y"
+
   def update_cfd_data_point_with_date_key(date)
-    @cfd_data_point.update('date' => date.strftime("%d/%-m/%Y"))
+    @cfd_data_point.update('date' => date.strftime(DATE_FORMAT))
   end
 
 end
