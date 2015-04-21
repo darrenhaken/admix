@@ -16,7 +16,7 @@ RSpec.describe MingleCfdDataPointLoader do
 
     allow(RestClient).to receive(:get).with(anything, anything) do |_, params|
       param = params[:params]
-      param[:mql].include?('SELECT COUNT(*) WHERE')? number_of_live_cards_response:mingle_wall_cards_response
+      param[:mql].include?('SELECT COUNT(*)')? number_of_live_cards_response:mingle_wall_cards_response
     end
   end
 
