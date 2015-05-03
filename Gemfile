@@ -6,6 +6,7 @@ gem 'nori'
 gem 'google_drive'
 gem 'json'
 gem 'whenever'
+gem 'holidays'
 
 group :development do
   gem 'rspec'

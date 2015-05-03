@@ -36,7 +36,6 @@ class CfdFillerForWorksheet
     Integer(value) rescue 0
   end
 
-
   DATE_FORMAT = "%d/%-m/%Y"
 
   def update_cfd_data_point_with_date_key(date)

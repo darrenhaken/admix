@@ -55,6 +55,7 @@ GEM
       guard-compat (~> 1.1)
       rspec (>= 2.99.0, < 4.0)
     hitimes (1.2.2)
+    holidays (2.0.0)
     i18n (0.6.11)
     json (1.8.1)
     jwt (1.2.1)
@@ -133,6 +134,7 @@ DEPENDENCIES
   bundler (~> 1.7)
   google_drive
   guard-rspec
+  holidays
   json
   nokogiri
   nori
