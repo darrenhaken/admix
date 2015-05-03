@@ -27,7 +27,12 @@ RSpec.describe CfdFillerForWorksheet do
   def assert_data(wrapper)
     mappings = CfdDataPointToColumnMapper.mapping
     @cfd_data_point.each do |k, v|
-      expect(wrapper.value_in_the_last_row_for_column(mappings[k])).to eq "#{v}"
+      worksheet_value = wrapper.value_in_the_last_row_for_column(mappings[k])
+      if k == 'date'
+        v = Time.parse(v).strftime('%Y-%m-%d')
+        worksheet_value = Time.parse(worksheet_value).strftime('%Y-%m-%d')
+      end
+      expect(worksheet_value).to eq "#{v}"
     end
   end
 
